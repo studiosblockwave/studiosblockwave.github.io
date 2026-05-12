@@ -4,253 +4,1140 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BlockWave Studios</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg: #050510;
+      --surface: #0d0d1f;
+      --blue: #2563ff;
+      --cyan: #00d4ff;
+      --purple: #7c3aff;
+      --pink: #ff2d78;
+      --text: #e8eaf0;
+      --muted: #6b7280;
     }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #0f172a;
-      color: white;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       overflow-x: hidden;
+      cursor: none;
     }
 
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--cyan);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 40px; height: 40px;
+      border: 1.5px solid rgba(0,212,255,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.12s ease;
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* ── CANVAS BACKGROUND ── */
+    #canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 22px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(5,5,16,0.4);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--cyan);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: white; }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      padding: 10px 24px;
+      border-radius: 100px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 0 30px rgba(37,99,255,0.4);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(37,99,255,0.6);
+    }
+
+    /* ── HERO ── */
     .hero {
+      position: relative;
+      z-index: 1;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 40px 20px;
-      background:
-        radial-gradient(circle at top right, rgba(59,130,246,0.25), transparent 25%),
-        radial-gradient(circle at bottom left, rgba(168,85,247,0.25), transparent 25%),
-        #0f172a;
+      padding: 120px 20px 80px;
     }
 
-    .logo {
-      width: 120px;
-      height: 120px;
-      border-radius: 30px;
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      display: flex;
+    .hero-badge {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 42px;
-      font-weight: 700;
-      margin-bottom: 25px;
-      box-shadow: 0 20px 50px rgba(59,130,246,0.35);
+      gap: 8px;
+      padding: 6px 18px;
+      border-radius: 100px;
+      border: 1px solid rgba(0,212,255,0.25);
+      background: rgba(0,212,255,0.06);
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 35px;
+      animation: fadeUp 1s ease both;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      animation: pulse 2s infinite;
     }
 
     h1 {
-      font-size: 4rem;
-      font-weight: 700;
-      margin-bottom: 15px;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3.2rem, 8vw, 7.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -3px;
+      margin-bottom: 30px;
+      animation: fadeUp 1s 0.15s ease both;
+    }
+    h1 .line1 { display: block; color: white; }
+    h1 .line2 {
+      display: block;
+      background: linear-gradient(90deg, var(--blue) 0%, var(--cyan) 40%, var(--purple) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 40px rgba(0,212,255,0.4));
     }
 
-    .subtitle {
-      max-width: 700px;
-      font-size: 1.2rem;
-      line-height: 1.8;
-      color: #cbd5e1;
-      margin-bottom: 40px;
+    .hero-sub {
+      max-width: 560px;
+      font-size: 1.1rem;
+      line-height: 1.9;
+      color: #8090a8;
+      margin-bottom: 55px;
+      animation: fadeUp 1s 0.3s ease both;
     }
 
-    .buttons {
+    .hero-btns {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       flex-wrap: wrap;
       justify-content: center;
+      animation: fadeUp 1s 0.45s ease both;
     }
 
-    .btn {
-      padding: 15px 30px;
+    .btn-primary {
+      position: relative;
+      padding: 16px 36px;
       border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #050510;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
       text-decoration: none;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 0 rgba(0,212,255,0);
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue), var(--purple));
+      border-radius: 15px;
+      z-index: -1;
+      filter: blur(8px);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 50px rgba(0,212,255,0.35); }
+    .btn-primary:hover::before { opacity: 1; }
+
+    .btn-ghost {
+      padding: 16px 36px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
       font-weight: 600;
-      transition: 0.3s ease;
-    }
-
-    .primary {
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      color: white;
-      box-shadow: 0 10px 30px rgba(59,130,246,0.4);
-    }
-
-    .secondary {
-      border: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      background: rgba(255,255,255,0.05);
+      text-decoration: none;
       backdrop-filter: blur(10px);
+      transition: all 0.3s;
     }
-
-    .btn:hover {
+    .btn-ghost:hover {
+      border-color: rgba(0,212,255,0.4);
+      background: rgba(0,212,255,0.07);
       transform: translateY(-3px);
     }
 
+    /* ── STATS ── */
+    .stats-strip {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin: 0 auto 100px;
+      max-width: 700px;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.02);
+      animation: fadeUp 1s 0.6s ease both;
+    }
+    .stat {
+      flex: 1;
+      padding: 28px 20px;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ── SECTION WRAPPER ── */
     .section {
-      padding: 90px 20px;
+      position: relative;
+      z-index: 1;
+      padding: 100px 40px;
       max-width: 1200px;
       margin: auto;
     }
 
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 16px;
+    }
     .section-title {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 50px;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .section-desc {
+      color: #6b7280;
+      max-width: 480px;
+      line-height: 1.8;
+      margin-bottom: 60px;
     }
 
-    .cards {
+    /* ── SERVICE CARDS ── */
+    .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
     }
 
     .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 30px;
+      position: relative;
+      background: rgba(13,13,31,0.8);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 40px 35px;
       border-radius: 24px;
-      backdrop-filter: blur(10px);
-      transition: 0.3s ease;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      cursor: none;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,212,255,0.08), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .card:hover::before { opacity: 1; }
+    .card:hover {
+      border-color: rgba(0,212,255,0.2);
+      transform: translateY(-8px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.08);
     }
 
-    .card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(59,130,246,0.4);
+    .card-icon {
+      width: 54px; height: 54px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 24px;
     }
+    .icon-blue { background: rgba(37,99,255,0.15); border: 1px solid rgba(37,99,255,0.3); }
+    .icon-cyan { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25); }
+    .icon-purple { background: rgba(124,58,255,0.12); border: 1px solid rgba(124,58,255,0.3); }
 
     .card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .card p { color: #6b7280; line-height: 1.75; font-size: 0.93rem; }
+
+    .card-arrow {
+      display: inline-flex;
+      margin-top: 24px;
+      color: var(--cyan);
+      font-size: 0.85rem;
+      font-weight: 600;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: all 0.3s;
+    }
+    .card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ── FEATURE BENTO ── */
+    .bento {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 20px;
+    }
+    .bento-card {
+      background: rgba(13,13,31,0.8);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 24px;
+      padding: 40px;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .bento-card:hover {
+      border-color: rgba(124,58,255,0.25);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .bento-card.tall { grid-row: span 2; }
+    .bento-card .bento-glow {
+      position: absolute;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      filter: blur(60px);
+      top: -40px; right: -40px;
+      opacity: 0.4;
+    }
+    .bento-card h3 {
+      font-family: 'Syne', sans-serif;
       font-size: 1.4rem;
-      margin-bottom: 15px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
     }
+    .bento-card p { color: #6b7280; line-height: 1.8; font-size: 0.92rem; }
 
-    .card p {
-      color: #cbd5e1;
-      line-height: 1.7;
+    .visual-block {
+      margin-top: 30px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
     }
-
-    .about {
-      text-align: center;
-      max-width: 850px;
-      margin: auto;
-      color: #cbd5e1;
-      line-height: 2;
-      font-size: 1.1rem;
+    .code-window {
+      background: #080815;
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
     }
-
-    footer {
-      padding: 40px 20px;
-      text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      color: #94a3b8;
+    .code-bar {
+      display: flex; gap: 7px; margin-bottom: 16px;
     }
+    .code-bar span {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .c1 { background: #ff5f57; }
+    .c2 { background: #febc2e; }
+    .c3 { background: #28c840; }
+    .code-line { margin: 4px 0; }
+    .kw { color: #7c3aff; }
+    .fn { color: #00d4ff; }
+    .str { color: #28c840; }
+    .cm { color: #3d4a5c; }
 
-    .contact {
-      margin-top: 20px;
+    .phone-mockup {
+      width: 140px;
+      height: 240px;
+      border-radius: 24px;
+      border: 2px solid rgba(255,255,255,0.12);
+      background: linear-gradient(160deg, #0d0d25, #161630);
+      margin: 30px auto 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .phone-screen {
+      position: absolute;
+      inset: 10px;
+      border-radius: 16px;
+      background: linear-gradient(160deg, rgba(37,99,255,0.2), rgba(0,212,255,0.1));
+      overflow: hidden;
+    }
+    .phone-notch {
+      width: 60px; height: 12px;
+      border-radius: 0 0 10px 10px;
+      background: rgba(0,0,0,0.8);
+      margin: 0 auto;
+    }
+    .phone-ui {
+      padding: 10px;
+    }
+    .phone-bar {
+      height: 6px; border-radius: 3px;
+      background: rgba(255,255,255,0.15);
+      margin: 8px 0;
+    }
+    .phone-bar.short { width: 60%; }
+    .phone-bar.accent { background: rgba(0,212,255,0.4); }
+
+    /* ── PROCESS ── */
+    .process-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .process-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 30px;
+      padding: 35px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s;
+    }
+    .process-item:hover .process-num { background: var(--cyan); color: #050510; }
+    .process-num {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,212,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
       font-size: 1rem;
+      color: var(--cyan);
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+    .process-content h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .process-content p { color: #6b7280; line-height: 1.7; font-size: 0.9rem; }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-text h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .about-text p { color: #6b7280; line-height: 1.9; margin-bottom: 16px; font-size: 0.95rem; }
+    .about-visual {
+      position: relative;
+      height: 380px;
+    }
+    .orbit-container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .center-orb {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      box-shadow: 0 0 60px rgba(0,212,255,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1rem;
+      z-index: 5;
+    }
+    .orbit {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      animation: spin linear infinite;
+    }
+    .orbit-1 { width: 160px; height: 160px; animation-duration: 8s; }
+    .orbit-2 { width: 250px; height: 250px; animation-duration: 14s; animation-direction: reverse; }
+    .orbit-3 { width: 340px; height: 340px; animation-duration: 20s; }
+    .orbit-dot {
+      position: absolute;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--cyan);
+      top: -5px; left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 12px var(--cyan);
+    }
+    .orbit-dot-purple {
+      background: var(--purple);
+      box-shadow: 0 0 12px var(--purple);
+    }
+    .orbit-dot-pink {
+      background: var(--pink);
+      box-shadow: 0 0 12px var(--pink);
     }
 
-    .contact a {
-      color: #60a5fa;
-      text-decoration: none;
+    /* ── CTA ── */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      margin: 0 40px 100px;
+      border-radius: 30px;
+      padding: 90px 60px;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(37,99,255,0.12), rgba(124,58,255,0.12));
+      border: 1px solid rgba(255,255,255,0.07);
+      overflow: hidden;
+    }
+    .cta-glow-1 {
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: var(--blue);
+      filter: blur(120px);
+      opacity: 0.12;
+      top: -100px; left: -50px;
+    }
+    .cta-glow-2 {
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: var(--purple);
+      filter: blur(120px);
+      opacity: 0.12;
+      bottom: -100px; right: -50px;
+    }
+    .cta-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+    .cta-section p { color: #6b7280; margin-bottom: 40px; font-size: 1rem; }
+    .cta-email {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 20px;
+    }
+    .cta-email a { color: var(--cyan); text-decoration: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 50px 60px 40px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    footer p { color: #3d4a5c; font-size: 0.82rem; }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
     }
 
-    @media(max-width: 768px) {
-      h1 {
-        font-size: 2.7rem;
-      }
+    /* ── MOBILE ── */
+    @media(max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .bento { grid-template-columns: 1fr; }
+      .bento-card.tall { grid-row: auto; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { height: 260px; }
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
+      .section { padding: 70px 24px; }
+      .cta-section { margin: 0 20px 70px; padding: 60px 30px; }
+    }
 
-      .subtitle {
-        font-size: 1rem;
-      }
+    /* ── NOISE OVERLAY ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9997;
+    }
 
-      .section-title {
-        font-size: 2rem;
-      }
+    /* Horizontal scrolling tech strip */
+    .tech-strip {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      margin-bottom: 100px;
+    }
+    .tech-track {
+      display: flex;
+      gap: 60px;
+      animation: scroll-left 20s linear infinite;
+      width: max-content;
+    }
+    .tech-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: #3d4a5c;
+      white-space: nowrap;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .tech-item span { font-size: 1rem; }
+    @keyframes scroll-left {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
     }
   </style>
 </head>
 <body>
 
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- WebGL-style particle canvas -->
+  <canvas id="canvas"></canvas>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">BlockWave</div>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#process">Process</a></li>
+    </ul>
+    <a href="mailto:studiosblockwave@gmail.com" class="nav-cta">Get in Touch</a>
+  </nav>
+
+  <!-- HERO -->
   <section class="hero">
-    <div class="logo">BW</div>
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Now Building Next-Gen Apps
+    </div>
 
-    <h1>BlockWave Studios</h1>
+    <h1>
+      <span class="line1">We Build</span>
+      <span class="line2">Digital Waves.</span>
+    </h1>
 
-    <p class="subtitle">
-      We build modern mobile applications, innovative digital products,
-      and immersive experiences focused on performance, simplicity,
-      and next-generation technology.
+    <p class="hero-sub">
+      Modern mobile applications, immersive digital experiences, and performance-first products built for the next generation.
     </p>
 
-    <div class="buttons">
-      <a href="mailto:studiosblockwave@gmail.com" class="btn primary">Contact Us</a>
-      <a href="#services" class="btn secondary">Explore Services</a>
+    <div class="hero-btns">
+      <a href="mailto:studiosblockwave@gmail.com" class="btn-primary">Start a Project →</a>
+      <a href="#services" class="btn-ghost">Explore Work</a>
     </div>
   </section>
 
+  <!-- STATS -->
+  <div class="stats-strip reveal">
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Flutter Native</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Core Services</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Possibilities</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Support</div>
+    </div>
+  </div>
+
+  <!-- TECH STRIP -->
+  <div class="tech-strip">
+    <div class="tech-track">
+      <span class="tech-item"><span>📱</span> Flutter</span>
+      <span class="tech-item"><span>🎮</span> Game Systems</span>
+      <span class="tech-item"><span>🌐</span> Web Dev</span>
+      <span class="tech-item"><span>⚡</span> Firebase</span>
+      <span class="tech-item"><span>🎨</span> UI/UX Design</span>
+      <span class="tech-item"><span>🤖</span> Android</span>
+      <span class="tech-item"><span>💎</span> Premium Apps</span>
+      <span class="tech-item"><span>🔗</span> API Integration</span>
+      <!-- duplicate for seamless loop -->
+      <span class="tech-item"><span>📱</span> Flutter</span>
+      <span class="tech-item"><span>🎮</span> Game Systems</span>
+      <span class="tech-item"><span>🌐</span> Web Dev</span>
+      <span class="tech-item"><span>⚡</span> Firebase</span>
+      <span class="tech-item"><span>🎨</span> UI/UX Design</span>
+      <span class="tech-item"><span>🤖</span> Android</span>
+      <span class="tech-item"><span>💎</span> Premium Apps</span>
+      <span class="tech-item"><span>🔗</span> API Integration</span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
   <section class="section" id="services">
-    <h2 class="section-title">Our Services</h2>
+    <p class="section-label reveal">What We Do</p>
+    <h2 class="section-title reveal reveal-delay-1">Services built for<br>the digital frontier.</h2>
+    <p class="section-desc reveal reveal-delay-2">From concept to deployment — we craft experiences that users actually love using.</p>
 
-    <div class="cards">
-
-      <div class="card">
+    <div class="cards-grid">
+      <div class="card reveal reveal-delay-1">
+        <div class="card-icon icon-blue">📱</div>
         <h3>Android App Development</h3>
-        <p>
-          Modern and scalable Android applications built using Flutter
-          and latest technologies for smooth performance and premium UI.
-        </p>
+        <p>Scalable, high-performance Android apps built with Flutter. Smooth 60fps animations, beautiful UI, and bulletproof architecture — delivered on time.</p>
+        <div class="card-arrow">Explore → </div>
       </div>
 
-      <div class="card">
+      <div class="card reveal reveal-delay-2">
+        <div class="card-icon icon-cyan">🎮</div>
         <h3>Game & Reward Systems</h3>
-        <p>
-          Interactive reward systems, virtual mining experiences,
-          gamification mechanics, and engagement-focused applications.
-        </p>
+        <p>Interactive reward mechanics, virtual mining experiences, and gamification layers that drive engagement and keep users coming back.</p>
+        <div class="card-arrow">Explore → </div>
       </div>
 
-      <div class="card">
+      <div class="card reveal reveal-delay-3">
+        <div class="card-icon icon-purple">🌐</div>
         <h3>Website Development</h3>
-        <p>
-          Fast, responsive, and modern websites with clean UI,
-          optimized performance, and professional branding.
-        </p>
+        <p>Fast, responsive, and visually stunning websites with clean code, SEO-optimized structure, and professional branding that converts.</p>
+        <div class="card-arrow">Explore → </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENTO FEATURE GRID -->
+  <section class="section">
+    <p class="section-label reveal">Why BlockWave</p>
+    <h2 class="section-title reveal reveal-delay-1">Engineered for<br>excellence.</h2>
+
+    <div class="bento reveal reveal-delay-2">
+      <div class="bento-card tall">
+        <div class="bento-glow" style="background: var(--blue);"></div>
+        <h3>Code That Scales</h3>
+        <p>We write clean, maintainable code following industry best practices. Your app today handles 100 users. Tomorrow it handles a million.</p>
+        <div class="visual-block">
+          <div class="code-window">
+            <div class="code-bar"><span class="c1"></span><span class="c2"></span><span class="c3"></span></div>
+            <div class="code-line"><span class="kw">class</span> <span class="fn">BlockWaveApp</span> <span class="kw">extends</span> StatelessWidget {</div>
+            <div class="code-line">&nbsp;&nbsp;<span class="cm">// Built for scale ✨</span></div>
+            <div class="code-line">&nbsp;&nbsp;<span class="kw">final</span> <span class="fn">performance</span> = <span class="str">'120fps'</span>;</div>
+            <div class="code-line">&nbsp;&nbsp;<span class="kw">final</span> <span class="fn">quality</span> = <span class="str">'premium'</span>;</div>
+            <div class="code-line">&nbsp;&nbsp;<span class="kw">final</span> <span class="fn">delivery</span> = <span class="str">'on-time'</span>;</div>
+            <div class="code-line">}</div>
+          </div>
+        </div>
       </div>
 
+      <div class="bento-card">
+        <div class="bento-glow" style="background: var(--purple);"></div>
+        <h3>Premium Mobile UI</h3>
+        <p>Pixel-perfect interfaces that feel native and look stunning. Design that users rave about.</p>
+        <div class="phone-mockup" style="animation: float 4s ease-in-out infinite;">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="phone-ui">
+              <div class="phone-bar accent"></div>
+              <div class="phone-bar short"></div>
+              <div class="phone-bar"></div>
+              <div class="phone-bar short"></div>
+              <div class="phone-bar accent" style="width:40%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bento-card">
+        <div class="bento-glow" style="background: var(--cyan);"></div>
+        <h3>Fast Turnaround</h3>
+        <p>Agile development cycles. You see progress weekly — not just at the finish line.</p>
+        <div style="margin-top:24px; display:flex; gap:8px; flex-wrap:wrap;">
+          <span style="padding: 6px 14px; border-radius: 100px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); font-size:0.75rem; color: var(--cyan);">Sprint-Based</span>
+          <span style="padding: 6px 14px; border-radius: 100px; background: rgba(37,99,255,0.1); border: 1px solid rgba(37,99,255,0.2); font-size:0.75rem; color: #60a5fa;">Agile</span>
+          <span style="padding: 6px 14px; border-radius: 100px; background: rgba(124,58,255,0.1); border: 1px solid rgba(124,58,255,0.2); font-size:0.75rem; color: #a78bfa;">Iterative</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="section">
-    <h2 class="section-title">About BlockWave Studios</h2>
-
-    <p class="about">
-      BlockWave Studios is an independent software and app development studio
-      focused on creating high-quality digital products and mobile experiences.
-      We aim to deliver reliable, modern, and user-friendly applications with
-      strong design principles and innovative technology solutions.
-    </p>
+  <!-- PROCESS -->
+  <section class="section" id="process">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start;">
+      <div>
+        <p class="section-label reveal">How We Work</p>
+        <h2 class="section-title reveal reveal-delay-1" style="margin-bottom:0;">A process that<br>actually works.</h2>
+      </div>
+      <div class="process-list">
+        <div class="process-item reveal">
+          <div class="process-num">01</div>
+          <div class="process-content">
+            <h4>Discovery & Brief</h4>
+            <p>We understand your idea, goals, audience, and tech needs — then craft a clear roadmap.</p>
+          </div>
+        </div>
+        <div class="process-item reveal reveal-delay-1">
+          <div class="process-num">02</div>
+          <div class="process-content">
+            <h4>Design & Prototype</h4>
+            <p>UI wireframes and interactive prototypes so you see the product before a single line of code.</p>
+          </div>
+        </div>
+        <div class="process-item reveal reveal-delay-2">
+          <div class="process-num">03</div>
+          <div class="process-content">
+            <h4>Build & Iterate</h4>
+            <p>Agile sprints, weekly demos, constant communication. You're always in the loop.</p>
+          </div>
+        </div>
+        <div class="process-item reveal reveal-delay-3">
+          <div class="process-num">04</div>
+          <div class="process-content">
+            <h4>Launch & Support</h4>
+            <p>Smooth deployment to stores and servers. Post-launch support to iron out anything.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="section-label reveal">About</p>
+        <h2 class="reveal reveal-delay-1">Independent.<br>Innovative.<br>Relentless.</h2>
+        <p class="reveal reveal-delay-2">BlockWave Studios is an independent software and app development studio pushing the limits of what digital products can be. No bureaucracy, no bloat — just focused execution.</p>
+        <p class="reveal reveal-delay-3">We combine cutting-edge technology with design principles that users actually love. Every pixel, every function, every interaction is intentional.</p>
+        <a href="mailto:studiosblockwave@gmail.com" class="btn-primary reveal" style="display:inline-flex; margin-top:30px;">Work With Us →</a>
+      </div>
+
+      <div class="about-visual reveal">
+        <div class="orbit-container">
+          <div class="orbit orbit-3">
+            <div class="orbit-dot orbit-dot-pink"></div>
+          </div>
+          <div class="orbit orbit-2">
+            <div class="orbit-dot orbit-dot-purple"></div>
+          </div>
+          <div class="orbit orbit-1">
+            <div class="orbit-dot"></div>
+          </div>
+          <div class="center-orb">BW</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section reveal">
+    <div class="cta-glow-1"></div>
+    <div class="cta-glow-2"></div>
+    <h2>Ready to build<br>something great?</h2>
+    <p>Tell us your idea. We'll make it real.</p>
+    <a href="mailto:studiosblockwave@gmail.com" class="btn-primary" style="display:inline-flex;">Let's Talk →</a>
+    <div class="cta-email">
+      Or email us directly at <a href="mailto:studiosblockwave@gmail.com">studiosblockwave@gmail.com</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
   <footer>
+    <div class="footer-logo">BlockWave Studios</div>
     <p>© 2026 BlockWave Studios. All Rights Reserved.</p>
-
-    <div class="contact">
-      Contact: <a href="mailto:studiosblockwave@gmail.com">studiosblockwave@gmail.com</a>
-    </div>
   </footer>
 
+  <script>
+    // ── CUSTOM CURSOR ──
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    });
+
+    function animateCursor() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    document.querySelectorAll('a, button, .card, .btn-primary, .btn-ghost').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '18px';
+        cursor.style.height = '18px';
+        cursorRing.style.width = '60px';
+        cursorRing.style.height = '60px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '10px';
+        cursor.style.height = '10px';
+        cursorRing.style.width = '40px';
+        cursorRing.style.height = '40px';
+      });
+    });
+
+    // ── PARTICLE CANVAS ──
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    let W, H, particles = [], mouse = { x: -1000, y: -1000 };
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    document.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.size = Math.random() * 1.5 + 0.3;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.5 + 0.1;
+        const colors = ['37,99,255', '0,212,255', '124,58,255', '255,45,120'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.baseX = this.x;
+        this.baseY = this.y;
+      }
+      update() {
+        const dx = mouse.x - this.x, dy = mouse.y - this.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          const force = (120 - dist) / 120;
+          this.x -= dx * force * 0.04;
+          this.y -= dy * force * 0.04;
+        } else {
+          this.x += this.speedX;
+          this.y += this.speedY;
+        }
+        if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 160; i++) particles.push(new Particle());
+
+    // Draw connection lines between nearby particles
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 100) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0, 212, 255, ${0.05 * (1 - dist/100)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // ── 3D CARD TILT ──
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2, cy = rect.height / 2;
+        const rotX = ((y - cy) / cy) * -8;
+        const rotY = ((x - cx) / cx) * 8;
+        card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-8px)`;
+        card.style.setProperty('--mx', (x / rect.width * 100) + '%');
+        card.style.setProperty('--my', (y / rect.height * 100) + '%');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+
+    // ── SCROLL REVEAL ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── SMOOTH NAV BACKGROUND ──
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        nav.style.background = 'rgba(5,5,16,0.85)';
+      } else {
+        nav.style.background = 'rgba(5,5,16,0.4)';
+      }
+    });
+  </script>
 </body>
 </html>
-
-Your professional website will be live.
