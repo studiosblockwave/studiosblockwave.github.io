@@ -669,17 +669,111 @@
       50% { transform: translateY(-12px); }
     }
 
+    .process-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
     /* ── MOBILE ── */
-    @media(max-width: 900px) {
-      nav { padding: 18px 24px; }
+    @media(max-width: 768px) {
+      /* Nav */
+      nav { padding: 14px 20px; }
       .nav-links { display: none; }
-      .bento { grid-template-columns: 1fr; }
+      .nav-cta { padding: 8px 16px; font-size: 0.8rem; }
+
+      /* Hero */
+      .hero { padding: 100px 20px 50px; min-height: 100svh; }
+      .hero-badge { font-size: 0.65rem; letter-spacing: 1.5px; padding: 5px 14px; margin-bottom: 24px; }
+      h1 { font-size: clamp(2.4rem, 11vw, 3.5rem); letter-spacing: -1.5px; margin-bottom: 18px; }
+      .hero-sub { font-size: 0.92rem; line-height: 1.75; margin-bottom: 36px; padding: 0 4px; }
+      .hero-btns { gap: 10px; flex-direction: column; align-items: center; width: 100%; }
+
+      /* Buttons — chhote */
+      .btn-primary {
+        padding: 12px 24px;
+        font-size: 0.85rem;
+        border-radius: 10px;
+        width: auto;
+        display: inline-flex !important;
+      }
+      .btn-ghost {
+        padding: 12px 24px;
+        font-size: 0.85rem;
+        border-radius: 10px;
+      }
+
+      /* Stats */
+      .stats-strip {
+        margin: 0 16px 60px;
+        flex-wrap: wrap;
+        border-radius: 16px;
+      }
+      .stat { min-width: 50%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 20px 16px; }
+      .stat:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.07); }
+      .stat:nth-last-child(-n+2) { border-bottom: none; }
+      .stat-num { font-size: 1.6rem; }
+
+      /* Tech strip */
+      .tech-strip { margin-bottom: 60px; }
+
+      /* Section */
+      .section { padding: 60px 20px; }
+      .section-title { font-size: clamp(1.7rem, 6vw, 2.2rem); letter-spacing: -0.8px; }
+      .section-desc { font-size: 0.88rem; margin-bottom: 36px; }
+
+      /* Cards */
+      .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+      .card { padding: 26px 22px; border-radius: 18px; }
+      .card h3 { font-size: 1.1rem; }
+      .card p { font-size: 0.87rem; }
+      .card-icon { width: 44px; height: 44px; font-size: 1.2rem; margin-bottom: 18px; }
+
+      /* Bento */
+      .bento { grid-template-columns: 1fr; gap: 14px; }
       .bento-card.tall { grid-row: auto; }
-      .about-grid { grid-template-columns: 1fr; gap: 40px; }
-      .about-visual { height: 260px; }
-      footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
-      .section { padding: 70px 24px; }
-      .cta-section { margin: 0 20px 70px; padding: 60px 30px; }
+      .bento-card { padding: 28px 24px; border-radius: 18px; }
+      .bento-card h3 { font-size: 1.1rem; }
+      .bento-card p { font-size: 0.87rem; }
+      .phone-mockup { width: 110px; height: 190px; }
+
+      /* Process */
+      .process-grid { grid-template-columns: 1fr !important; gap: 30px !important; }
+      .process-item { gap: 18px; padding: 24px 0; }
+      .process-num { width: 40px; height: 40px; font-size: 0.85rem; border-radius: 10px; }
+      .process-content h4 { font-size: 1rem; }
+      .process-content p { font-size: 0.85rem; }
+
+      /* About */
+      .about-grid { grid-template-columns: 1fr; gap: 36px; }
+      .about-text h2 { font-size: clamp(1.8rem, 6vw, 2.4rem); letter-spacing: -1px; }
+      .about-text p { font-size: 0.88rem; }
+      .about-visual { height: 220px; }
+      .orbit-3 { width: 200px !important; height: 200px !important; }
+      .orbit-2 { width: 140px !important; height: 140px !important; }
+      .orbit-1 { width: 80px !important; height: 80px !important; }
+      .center-orb { width: 64px; height: 64px; font-size: 0.8rem; }
+
+      /* CTA */
+      .cta-section { margin: 0 14px 70px; padding: 50px 24px; border-radius: 20px; }
+      .cta-section h2 { font-size: clamp(1.7rem, 6vw, 2.2rem); letter-spacing: -1px; }
+      .cta-section p { font-size: 0.88rem; }
+      .cta-email { font-size: 0.75rem; }
+
+      /* Footer */
+      footer { flex-direction: column; gap: 10px; text-align: center; padding: 30px 20px; }
+      footer p { font-size: 0.75rem; }
+
+      /* Hide custom cursor on touch */
+      .cursor, .cursor-ring { display: none; }
+      body { cursor: auto; }
+    }
+
+    @media(max-width: 400px) {
+      h1 { font-size: 2.1rem; }
+      .hero-sub { font-size: 0.87rem; }
+      .stats-strip { margin: 0 10px 50px; }
     }
 
     /* ── NOISE OVERLAY ── */
@@ -898,7 +992,7 @@
 
   <!-- PROCESS -->
   <section class="section" id="process">
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start;">
+    <div class="process-grid">
       <div>
         <p class="section-label reveal">How We Work</p>
         <h2 class="section-title reveal reveal-delay-1" style="margin-bottom:0;">A process that<br>actually works.</h2>
@@ -944,7 +1038,7 @@
         <h2 class="reveal reveal-delay-1">Independent.<br>Innovative.<br>Relentless.</h2>
         <p class="reveal reveal-delay-2">BlockWave Studios is an independent software and app development studio pushing the limits of what digital products can be. No bureaucracy, no bloat — just focused execution.</p>
         <p class="reveal reveal-delay-3">We combine cutting-edge technology with design principles that users actually love. Every pixel, every function, every interaction is intentional.</p>
-        <a href="mailto:studiosblockwave@gmail.com" class="btn-primary reveal" style="display:inline-flex; margin-top:30px;">Work With Us →</a>
+        <a href="mailto:studiosblockwave@gmail.com" class="btn-primary reveal" style="display:inline-flex; margin-top:30px; align-self:flex-start;">Work With Us →</a>
       </div>
 
       <div class="about-visual reveal">
@@ -983,40 +1077,42 @@
   </footer>
 
   <script>
-    // ── CUSTOM CURSOR ──
+    // ── CUSTOM CURSOR (desktop only) ──
     const cursor = document.getElementById('cursor');
     const cursorRing = document.getElementById('cursorRing');
+    const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
 
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX; mouseY = e.clientY;
-      cursor.style.left = mouseX + 'px';
-      cursor.style.top = mouseY + 'px';
-    });
+    if (!isTouchDevice) {
+      document.addEventListener('mousemove', e => {
+        mouseX = e.clientX; mouseY = e.clientY;
+        cursor.style.left = mouseX + 'px';
+        cursor.style.top = mouseY + 'px';
+      });
 
-    function animateCursor() {
-      ringX += (mouseX - ringX) * 0.12;
-      ringY += (mouseY - ringY) * 0.12;
-      cursorRing.style.left = ringX + 'px';
-      cursorRing.style.top = ringY + 'px';
-      requestAnimationFrame(animateCursor);
+      (function animateCursor() {
+        ringX += (mouseX - ringX) * 0.12;
+        ringY += (mouseY - ringY) * 0.12;
+        cursorRing.style.left = ringX + 'px';
+        cursorRing.style.top = ringY + 'px';
+        requestAnimationFrame(animateCursor);
+      })();
+
+      document.querySelectorAll('a, button, .card, .btn-primary, .btn-ghost').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.style.width = '18px';
+          cursor.style.height = '18px';
+          cursorRing.style.width = '60px';
+          cursorRing.style.height = '60px';
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.style.width = '10px';
+          cursor.style.height = '10px';
+          cursorRing.style.width = '40px';
+          cursorRing.style.height = '40px';
+        });
+      });
     }
-    animateCursor();
-
-    document.querySelectorAll('a, button, .card, .btn-primary, .btn-ghost').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.style.width = '18px';
-        cursor.style.height = '18px';
-        cursorRing.style.width = '60px';
-        cursorRing.style.height = '60px';
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.style.width = '10px';
-        cursor.style.height = '10px';
-        cursorRing.style.width = '40px';
-        cursorRing.style.height = '40px';
-      });
-    });
 
     // ── PARTICLE CANVAS ──
     const canvas = document.getElementById('canvas');
