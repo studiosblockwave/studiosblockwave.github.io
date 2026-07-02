@@ -289,12 +289,12 @@
 
     /* ════ REST OF SITE (unchanged) ════ */
     .cards3d-section{position:relative;z-index:1;padding:100px 52px}
-    .cards3d-row{display:flex;gap:20px;perspective:1200px;justify-content:center;flex-wrap:wrap}
+    .cards3d-row{display:flex;gap:28px;perspective:1200px;justify-content:center;flex-wrap:wrap}
 
     /* Glass cards */
     .c3d{
-      width:230px;height:290px;border-radius:22px;
-      padding:28px 24px;
+      width:255px;height:320px;border-radius:22px;
+      padding:30px 26px;
       display:flex;flex-direction:column;justify-content:space-between;
       transform-style:preserve-3d;
       transition:transform .45s var(--ease),box-shadow .45s,border-color .4s;
@@ -605,7 +605,7 @@
     .d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}.d4{transition-delay:.28s}
 
     @media(max-width:1050px){
-      .hero{grid-template-columns:1fr;padding-bottom:120px}
+      .hero{grid-template-columns:1fr}
       .hero-right{height:460px;min-height:auto}
       .build-grid{grid-template-columns:repeat(2,1fr)}
       .metrics-wrap{grid-template-columns:1fr;gap:52px}
@@ -618,6 +618,12 @@
       .hero-scroll{left:20px}
       h1.htitle{letter-spacing:-2px}
       .cards3d-section{padding:72px 20px}
+      .cards3d-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;justify-content:stretch}
+      .c3d{width:100%;height:220px;padding:22px 18px;border-radius:18px}
+      .c3d-icon{width:38px;height:38px;border-radius:11px}
+      .c3d-icon svg{width:16px;height:16px}
+      .c3d h3{font-size:.88rem}
+      .c3d p{font-size:.7rem;line-height:1.55}
       .nums{grid-template-columns:repeat(2,1fr)}
       .num-c:nth-child(2){border-right:none}
       .num-c:nth-child(3){border-top:1px solid var(--b)}
@@ -632,19 +638,27 @@
       .privacy-card{padding:36px 28px}
       footer{padding:44px 20px 28px}
       .ft-top{flex-direction:column;gap:36px}
+      .ft-cols{gap:36px}
     }
     @media(max-width:580px){
       .build-grid{grid-template-columns:1fr}
       .app-features{grid-template-columns:1fr}
       .hero-btns{flex-direction:column;width:100%}
       .btn-primary,.btn-ghost,.play-btn{justify-content:center}
-      .ft-cols{flex-direction:column;gap:30px}
+      .ft-cols{flex-direction:row;gap:20px;justify-content:space-between}
+      .ft-col{flex:1;min-width:0}
       .dash-grid{grid-template-columns:1fr}
       .dash-card.wide{grid-column:span 1}
       #cur,.cr{display:none!important}
       body{cursor:auto}
       .hero-right{display:none}
       .hero{grid-template-columns:1fr}
+    }
+    @media(max-width:420px){
+      .c3d{height:200px;padding:18px 14px}
+      .c3d h3{font-size:.82rem}
+      .c3d p{font-size:.66rem;line-height:1.5}
+      .cards3d-row{gap:10px}
     }
   </style>
 </head>
@@ -1090,25 +1104,64 @@ const CIRC=2*Math.PI*30;
 const ringObs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.querySelectorAll('.ring-prog[data-pct]').forEach(r=>{const p=parseFloat(r.dataset.pct)||0;r.style.strokeDashoffset=CIRC-(CIRC*p/100)});ringObs.unobserve(x.target)}})},{threshold:.3});
 document.querySelectorAll('.dash-grid').forEach(el=>ringObs.observe(el));
 
-/* THREE.JS */
+/* THREE.JS — flowing liquid-gold ribbons drifting through the dark. No polyhedra, no dots. */
 (function(){
   const canvas=document.getElementById('three-canvas');
   const W=window.innerWidth,H=window.innerHeight;
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
   renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0x000000,0);
-  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(60,W/H,0.1,100);
-  camera.position.z=5;
-  const objs=[],geos=[new THREE.IcosahedronGeometry(1,1),new THREE.OctahedronGeometry(.85,0),new THREE.TorusGeometry(.7,.25,8,24),new THREE.BoxGeometry(1.1,1.1,1.1)];
-  const colors3=[0xFF2D55,0x0A84FF,0x30D158,0xBF5AF2],positions=[[-4.2,1.8,-3],[4.0,2.2,-4],[-3.5,-1.8,-2.5],[3.8,-1.5,-3.5]];
-  geos.forEach((geo,i)=>{const mat=new THREE.MeshBasicMaterial({color:colors3[i],wireframe:true,opacity:.2,transparent:true});const mesh=new THREE.Mesh(geo,mat);mesh.position.set(...positions[i]);scene.add(mesh);objs.push({mesh,speed:0.004+i*.001,axis:new THREE.Vector3(Math.random(),Math.random(),Math.random()).normalize()})});
-  const pCount=220,pGeo=new THREE.BufferGeometry(),pPos=new Float32Array(pCount*3);
-  for(let i=0;i<pCount;i++){pPos[i*3]=(Math.random()-.5)*22;pPos[i*3+1]=(Math.random()-.5)*22;pPos[i*3+2]=(Math.random()-.5)*10-2}
-  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
-  scene.add(new THREE.Points(pGeo,new THREE.PointsMaterial({color:0x3A5CCC,size:.03,transparent:true,opacity:.45})));
+  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(50,W/H,0.1,100);
+  camera.position.set(0,0,9);
+  scene.fog=new THREE.Fog(0x050508,7,20);
+
+  function makeRibbon(cfg){
+    const pts=[];
+    for(let i=0;i<=cfg.seg;i++) pts.push(new THREE.Vector3(0,0,0));
+    const curve=new THREE.CatmullRomCurve3(pts);
+    const geo=new THREE.TubeGeometry(curve,cfg.seg,cfg.radius,6,false);
+    const mat=new THREE.MeshBasicMaterial({color:cfg.color,transparent:true,opacity:cfg.opacity});
+    const mesh=new THREE.Mesh(geo,mat);
+    scene.add(mesh);
+    return {mesh,curve,cfg};
+  }
+
+  const ribbons=[
+    makeRibbon({seg:90,radius:.045,color:0xD9B778,opacity:.55,width:20,ampY:2.6,ampZ:2.2,freq:2.1,speed:.35,phase:0,   y0: 1.4, z0:-3}),
+    makeRibbon({seg:90,radius:.03, color:0xEAD9B0,opacity:.4, width:22,ampY:2.1,ampZ:2.6,freq:1.7,speed:.27,phase:2.1, y0:-1.1, z0:-6}),
+    makeRibbon({seg:90,radius:.022,color:0x9FB0C9,opacity:.32,width:24,ampY:1.8,ampZ:1.9,freq:2.6,speed:.42,phase:4.4, y0: 0.3, z0:-9}),
+  ];
+
+  function updateRibbon(r,t){
+    const c=r.cfg,pts=[];
+    for(let i=0;i<=c.seg;i++){
+      const p=i/c.seg;
+      const x=(p-.5)*c.width;
+      const y=c.y0+Math.sin(p*Math.PI*c.freq+t*c.speed+c.phase)*c.ampY+Math.sin(p*7+t*.2)*.25;
+      const z=c.z0+Math.cos(p*Math.PI*(c.freq*.7)+t*c.speed*.8+c.phase)*c.ampZ;
+      pts.push(new THREE.Vector3(x,y,z));
+    }
+    /* build a fresh curve every frame — mutating .points on an existing
+       CatmullRomCurve3 leaves its arc-length cache stale and produces a
+       broken/invisible tube, which is why nothing was rendering before */
+    const freshCurve=new THREE.CatmullRomCurve3(pts);
+    const newGeo=new THREE.TubeGeometry(freshCurve,c.seg,c.radius,6,false);
+    r.mesh.geometry.dispose();
+    r.mesh.geometry=newGeo;
+    r.curve=freshCurve;
+  }
+
   let mX=0,mY=0;
   document.addEventListener('mousemove',e=>{mX=(e.clientX/window.innerWidth-.5)*.6;mY=(e.clientY/window.innerHeight-.5)*.4});
   let t=0;
-  function animate(){requestAnimationFrame(animate);t+=.005;objs.forEach(o=>o.mesh.rotateOnAxis(o.axis,o.speed));scene.children[4].rotation.y=t*.04;camera.position.x+=(mX-camera.position.x)*.04;camera.position.y+=(-mY-camera.position.y)*.04;camera.lookAt(scene.position);renderer.render(scene,camera)}
+  function animate(){
+    requestAnimationFrame(animate);
+    t+=.012;
+    ribbons.forEach(r=>updateRibbon(r,t));
+    camera.position.x+=(mX-camera.position.x)*.04;
+    camera.position.y+=(-mY-camera.position.y)*.04;
+    camera.lookAt(0,0,-4);
+    renderer.render(scene,camera);
+  }
   animate();
   window.addEventListener('resize',()=>{const W2=window.innerWidth,H2=window.innerHeight;camera.aspect=W2/H2;camera.updateProjectionMatrix();renderer.setSize(W2,H2)});
 })();
