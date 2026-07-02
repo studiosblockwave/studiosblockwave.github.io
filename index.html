@@ -1,1872 +1,1150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>BlockWave Studios — Android App Studio, India</title>
-  <meta name="description" content="BlockWave Studios is an independent Android app studio based in India. We build performance-first, privacy-focused apps. Explore BTC Miner on Google Play.">
-  <meta name="author" content="BlockWave Studios">
-  <meta name="theme-color" content="#03040F">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>BlockWave Studios — Independent Android App Studio</title>
+  <meta name="description" content="BlockWave Studios is an independent Android app studio based in India, building performance-first, privacy-focused Android applications.">
+  <meta name="theme-color" content="#050508">
   <link rel="icon" type="image/jpeg" href="btc-miner-icon.jpg">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <style>
-    /* ═══════════════════════════════════════════
-       TOKENS
-    ═══════════════════════════════════════════ */
     :root {
-      --bg:      #03040F;
-      --bg2:     #07091A;
-      --surface: #0C0E22;
-      --border:  rgba(255,255,255,0.07);
-      --border2: rgba(255,255,255,0.12);
+      --bg:     #050508;
+      --bg2:    #080810;
+      --s1:     #0c0c18;
+      --b:      rgba(255,255,255,0.07);
+      --b2:     rgba(255,255,255,0.11);
+      --red:    #FF2D55;
+      --blue:   #0A84FF;
+      --green:  #30D158;
+      --neon:   #BF5AF2;
+      --cyan:   #5AC8FA;
+      --orange: #FF9F0A;
+      --w:      #F5F5F7;
+      --muted:  #48485A;
+      --dim:    #2A2A38;
+      --ease:   cubic-bezier(0.22,1,0.36,1);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{overflow-x:hidden;scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--w);overflow-x:hidden;cursor:none}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    :focus-visible{outline:1px solid var(--blue);outline-offset:3px}
 
-      --gold:    #C9A84C;
-      --gold2:   #E8C96A;
-      --gold-dim: rgba(201,168,76,0.12);
-      --gold-glow: rgba(201,168,76,0.22);
+    /* CURSOR */
+    #cur{position:fixed;pointer-events:none;z-index:9999;top:0;left:0}
+    .cd{width:7px;height:7px;background:#fff;border-radius:50%;transform:translate(-50%,-50%);transition:width .15s,height .15s}
+    .cr{position:fixed;width:32px;height:32px;border:1px solid rgba(10,132,255,.55);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s var(--ease),height .3s var(--ease),border-color .3s}
+    .cr.h{width:50px;height:50px;border-color:var(--blue)}
+    .cd.h{width:12px;height:12px}
 
-      --white:   #F2F3F7;
-      --muted:   #5A607A;
-      --dim:     #3A3F57;
+    /* GRAIN */
+    .grain{position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.028;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-      --accent:  #3A5CCC;
-      --accent2: #5B7FFF;
+    /* THREE.JS */
+    #three-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-      --ease:    cubic-bezier(0.22, 1, 0.36, 1);
-      --ease2:   cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 52px;border-bottom:1px solid transparent;transition:background .5s,border-color .5s,backdrop-filter .5s}
+    nav.on{background:rgba(5,5,8,.88);backdrop-filter:blur(22px);border-color:var(--b)}
+    .nlogo{display:flex;align-items:center;gap:10px}
+    .nlogo img{width:26px;height:26px;border-radius:7px;border:1px solid var(--b);object-fit:cover}
+    .nlogo-txt{font-size:1rem;font-weight:700;letter-spacing:-.3px}
+    .nlogo-txt .dot{color:var(--blue)}
+    .nlinks{display:flex;gap:36px;list-style:none}
+    .nlinks a{font-size:.8rem;color:var(--muted);font-weight:500;transition:color .2s;position:relative}
+    .nlinks a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--blue);transition:width .25s var(--ease)}
+    .nlinks a:hover{color:var(--w)}
+    .nlinks a:hover::after{width:100%}
+    .nbtn{padding:9px 22px;border-radius:8px;background:var(--blue);color:#fff;font-size:.78rem;font-weight:600;letter-spacing:.1px;transition:background .2s,transform .25s,box-shadow .25s}
+    .nbtn:hover{background:#1a8fff;transform:translateY(-1px);box-shadow:0 8px 28px rgba(10,132,255,.35)}
 
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html {
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--white);
-      overflow-x: hidden;
-      cursor: none;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
-
-    :focus-visible {
-      outline: 1px solid var(--gold);
-      outline-offset: 4px;
-    }
-
-    /* ═══════════════════════════════════════════
-       CURSOR
-    ═══════════════════════════════════════════ */
-    .cur {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      mix-blend-mode: difference;
-    }
-    .cur-dot {
-      width: 8px; height: 8px;
-      background: #fff;
-      border-radius: 50%;
-      transform: translate(-50%,-50%);
-      transition: width .2s, height .2s;
-    }
-    .cur-ring {
-      width: 36px; height: 36px;
-      border: 1px solid rgba(201,168,76,0.6);
-      border-radius: 50%;
-      transform: translate(-50%,-50%);
-      transition: width .35s var(--ease), height .35s var(--ease), border-color .35s;
-    }
-    .cur.hov .cur-dot { width: 14px; height: 14px; }
-    .cur.hov .cur-ring { width: 56px; height: 56px; border-color: var(--gold); }
-
-    /* ═══════════════════════════════════════════
-       GRAIN OVERLAY
-    ═══════════════════════════════════════════ */
-    .grain {
-      position: fixed;
-      inset: 0;
-      z-index: 9990;
-      pointer-events: none;
-      opacity: 0.032;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-
-    /* ═══════════════════════════════════════════
-       NAV
-    ═══════════════════════════════════════════ */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 0 56px;
-      height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid transparent;
-      transition: border-color .5s, background .5s, backdrop-filter .5s;
-    }
-    nav.scrolled {
-      border-color: var(--border);
-      background: rgba(3,4,15,0.82);
-      backdrop-filter: blur(22px);
-    }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-    .nav-logo img {
-      width: 28px; height: 28px;
-      border-radius: 7px;
-      object-fit: cover;
-      border: 1px solid var(--border2);
-    }
-    .nav-logo-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-      color: var(--white);
-    }
-    .nav-logo-text span { color: var(--gold); }
-
-    .nav-center {
-      display: flex;
-      gap: 40px;
-      list-style: none;
-    }
-    .nav-center a {
-      font-size: 0.82rem;
-      font-weight: 500;
-      letter-spacing: 0.2px;
-      color: var(--muted);
-      transition: color .25s;
-    }
-    .nav-center a:hover { color: var(--white); }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .nav-right .nav-mail {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      letter-spacing: -0.2px;
-    }
-    .nav-btn {
-      padding: 9px 22px;
-      border-radius: 8px;
-      background: var(--gold);
-      color: #0A0800;
-      font-size: 0.8rem;
-      font-weight: 700;
-      font-family: 'Space Grotesk', sans-serif;
-      letter-spacing: 0.2px;
-      transition: background .25s, transform .25s;
-    }
-    .nav-btn:hover {
-      background: var(--gold2);
-      transform: translateY(-1px);
-    }
-
-    /* ═══════════════════════════════════════════
-       HERO
-    ═══════════════════════════════════════════ */
+    /* ════ HERO ════ */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 0 56px 80px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-bg-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
-      background-size: 80px 80px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, black 20%, transparent 80%);
-    }
-
-    .hero-glow {
-      position: absolute;
-      width: 900px; height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(58,92,204,0.18) 0%, transparent 65%);
-      top: -100px; left: -200px;
-      pointer-events: none;
-    }
-    .hero-glow2 {
-      position: absolute;
-      width: 600px; height: 600px;
-      background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 65%);
-      bottom: 0; right: -100px;
-      pointer-events: none;
-    }
-
-    .hero-top-label {
-      position: absolute;
-      top: 96px; left: 56px;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--dim);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .hero-top-label::before {
-      content: '';
-      width: 24px; height: 1px;
-      background: var(--dim);
-    }
-
-    .hero-index {
-      position: absolute;
-      top: 50%; right: 56px;
-      transform: translateY(-50%);
-      writing-mode: vertical-rl;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.64rem;
-      color: var(--dim);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 980px;
-    }
-
-    .hero-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 36px;
-    }
-    .hero-kicker-line {
-      width: 32px; height: 1px;
-      background: var(--gold);
-    }
-    .hero-kicker span {
-      font-size: 0.72rem;
-      font-family: 'Space Mono', monospace;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    h1.hero-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(3.4rem, 7.5vw, 7.2rem);
-      font-weight: 700;
-      line-height: 0.95;
-      letter-spacing: -3.5px;
-      margin-bottom: 40px;
-    }
-    h1.hero-title .t1 {
-      display: block;
-      color: var(--white);
-    }
-    h1.hero-title .t2 {
-      display: block;
-      color: var(--gold);
-    }
-    h1.hero-title .t3 {
-      display: block;
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(255,255,255,0.18);
-    }
-
-    .hero-bottom {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-    .hero-desc {
-      max-width: 440px;
-      font-size: 1rem;
-      line-height: 1.8;
-      color: #6A7090;
-      font-weight: 400;
-    }
-    .hero-desc strong { color: var(--white); font-weight: 500; }
-
-    .hero-actions {
-      display: flex;
-      gap: 14px;
-      flex-shrink: 0;
-      align-items: center;
-    }
-
-    .btn-gold {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      padding: 14px 28px;
-      border-radius: 8px;
-      background: var(--gold);
-      color: #0A0800;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 700;
-      transition: background .25s, transform .3s var(--ease);
-    }
-    .btn-gold:hover {
-      background: var(--gold2);
-      transform: translateY(-2px);
-    }
-    .btn-gold svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 13px 24px;
-      border-radius: 8px;
-      border: 1px solid var(--border2);
-      color: var(--muted);
-      font-size: 0.88rem;
-      font-weight: 500;
-      transition: border-color .25s, color .25s, transform .3s var(--ease);
-    }
-    .btn-outline:hover {
-      border-color: rgba(255,255,255,0.28);
-      color: var(--white);
-      transform: translateY(-2px);
-    }
-
-    .hero-scroll {
-      position: absolute;
-      bottom: 36px; left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      z-index: 2;
-    }
-    .hero-scroll span {
-      font-size: 0.62rem;
-      font-family: 'Space Mono', monospace;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-    .scroll-line {
-      width: 1px; height: 40px;
-      background: linear-gradient(to bottom, var(--gold), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-    @keyframes scrollPulse {
-      0%, 100% { opacity: 0.3; transform: scaleY(0.6); transform-origin: top; }
-      50% { opacity: 1; transform: scaleY(1); }
-    }
-
-    /* ═══════════════════════════════════════════
-       STUDIO NUMBERS STRIP
-    ═══════════════════════════════════════════ */
-    .numbers-strip {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .number-cell {
-      padding: 42px 48px;
-      border-right: 1px solid var(--border);
-      position: relative;
-    }
-    .number-cell:last-child { border-right: none; }
-    .number-cell-n {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.6rem;
-      font-weight: 700;
-      letter-spacing: -2px;
-      color: var(--white);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .number-cell-n sup {
-      font-size: 1rem;
-      color: var(--gold);
-      vertical-align: super;
-      letter-spacing: 0;
-      font-weight: 500;
-    }
-    .number-cell-l {
-      font-size: 0.78rem;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-      font-weight: 400;
-    }
-    .number-cell-idx {
-      position: absolute;
-      top: 18px; right: 20px;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.58rem;
-      color: var(--dim);
-      letter-spacing: 1px;
-    }
-
-    /* ═══════════════════════════════════════════
-       MARQUEE
-    ═══════════════════════════════════════════ */
-    .marquee-wrap {
-      overflow: hidden;
-      border-bottom: 1px solid var(--border);
-      padding: 16px 0;
-      background: var(--bg2);
-    }
-    .marquee-track {
-      display: flex;
-      gap: 0;
-      animation: marquee 28s linear infinite;
-      width: max-content;
-    }
-    .marquee-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 40px;
-      border-right: 1px solid var(--border);
-      font-size: 0.7rem;
-      font-family: 'Space Mono', monospace;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--dim);
-      white-space: nowrap;
-    }
-    .marquee-dot {
-      width: 4px; height: 4px;
-      border-radius: 50%;
-      background: var(--gold);
-      flex-shrink: 0;
-    }
-    @keyframes marquee {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
-
-    /* ═══════════════════════════════════════════
-       SECTION UTILITY
-    ═══════════════════════════════════════════ */
-    .section {
-      padding: 120px 56px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .section-sm { padding-top: 80px; padding-bottom: 80px; }
-
-    .section-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .eyebrow-line { width: 24px; height: 1px; background: var(--gold); }
-    .eyebrow-text {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.66rem;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-    .eyebrow-num {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.66rem;
-      color: var(--dim);
-      letter-spacing: 1px;
-      margin-left: auto;
-    }
-
-    .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.2rem, 4vw, 3.6rem);
-      font-weight: 700;
-      letter-spacing: -2px;
-      line-height: 1.06;
-      color: var(--white);
-    }
-    .section-title em {
-      font-style: normal;
-      color: var(--gold);
-    }
-    .section-body {
-      font-size: 0.95rem;
-      line-height: 1.85;
-      color: var(--muted);
-      margin-top: 20px;
-      max-width: 480px;
-    }
-
-    .hr { height: 1px; background: var(--border); margin: 0 56px; }
-
-    /* ═══════════════════════════════════════════
-       APP SHOWCASE (BTC Miner)
-    ═══════════════════════════════════════════ */
-    .app-section {
-      padding: 120px 56px;
-    }
-
-    .app-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      max-width: 1400px;
-      margin: 0 auto;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      background: var(--bg2);
-    }
-
-    .app-info {
-      padding: 64px 56px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border-right: 1px solid var(--border);
-    }
-
-    .app-header {
-      margin-bottom: 0;
-    }
-    .app-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px 14px 5px 6px;
-      border-radius: 100px;
-      background: var(--gold-dim);
-      border: 1px solid rgba(201,168,76,0.2);
-      margin-bottom: 28px;
-    }
-    .app-tag-dot {
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      overflow: hidden;
-    }
-    .app-tag-dot img { width: 100%; height: 100%; object-fit: cover; }
-    .app-tag span {
-      font-size: 0.7rem;
-      font-family: 'Space Mono', monospace;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .app-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.2rem, 4vw, 3.4rem);
-      font-weight: 700;
-      letter-spacing: -2px;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .app-sub {
-      font-size: 0.85rem;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      letter-spacing: 0.5px;
-      margin-bottom: 28px;
-    }
-    .app-desc {
-      font-size: 0.95rem;
-      line-height: 1.85;
-      color: #5A607A;
-      margin-bottom: 36px;
-      max-width: 440px;
-    }
-
-    .app-features {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 44px;
-    }
-    .app-feature {
-      background: var(--bg2);
-      padding: 18px 20px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    .app-feature-icon {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .app-feature-icon svg { width: 14px; height: 14px; color: var(--gold); }
-    .app-feature-text strong {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 2px;
-    }
-    .app-feature-text span {
-      font-size: 0.74rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .app-cta {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .play-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 24px;
-      border-radius: 10px;
-      background: var(--gold);
-      color: #0A0800;
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: 0.88rem;
-      transition: background .25s, transform .3s var(--ease);
-    }
-    .play-btn:hover { background: var(--gold2); transform: translateY(-2px); }
-    .play-btn svg { width: 18px; height: 18px; }
-
-    .play-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    .play-label strong { display: block; color: var(--dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-
-    .app-image-pane {
-      position: relative;
-      overflow: hidden;
-      min-height: 600px;
-      background: linear-gradient(160deg, #070921, #030415);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .app-image-glow {
-      position: absolute;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    .app-screenshot {
       position: relative;
       z-index: 1;
-      width: 88%;
-      max-width: 460px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow:
-        0 40px 80px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(201,168,76,0.08);
-      animation: floatImg 6s ease-in-out infinite;
-    }
-    @keyframes floatImg {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .app-disclaimer {
-      padding: 16px 56px;
-      border-top: 1px solid var(--border);
-      font-size: 0.74rem;
-      color: var(--dim);
-      line-height: 1.7;
-      background: var(--bg2);
-    }
-
-    /* ═══════════════════════════════════════════
-       ABOUT
-    ═══════════════════════════════════════════ */
-    .about-layout {
+      min-height: 100vh;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-    }
-
-    .about-left {}
-
-    .about-statement {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 600;
-      letter-spacing: -1.2px;
-      line-height: 1.3;
-      color: var(--white);
-      margin-top: 28px;
-      margin-bottom: 28px;
-    }
-    .about-statement em {
-      font-style: normal;
-      color: var(--gold);
-    }
-
-    .about-para {
-      font-size: 0.95rem;
-      line-height: 1.9;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-
-    .about-right {
-      padding-top: 60px;
-    }
-
-    .values-list {
-      list-style: none;
-      border-top: 1px solid var(--border);
-    }
-    .value-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .value-num {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--dim);
-      letter-spacing: 1px;
-      padding-top: 3px;
-      flex-shrink: 0;
-    }
-    .value-content strong {
-      display: block;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      color: var(--white);
-      margin-bottom: 6px;
-    }
-    .value-content p {
-      font-size: 0.84rem;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-    .value-icon {
-      margin-left: auto;
-      width: 36px; height: 36px;
-      border-radius: 9px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .value-icon svg { width: 14px; height: 14px; color: var(--gold); }
-
-    /* ═══════════════════════════════════════════
-       WHAT WE BUILD
-    ═══════════════════════════════════════════ */
-    .build-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
+      padding: 0 52px;
       gap: 40px;
-      margin-bottom: 56px;
-      flex-wrap: wrap;
-    }
-
-    .build-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 16px;
       overflow: hidden;
     }
-    .build-card {
-      background: var(--bg2);
-      padding: 40px 32px;
-      position: relative;
-      transition: background .3s;
-    }
-    .build-card:hover { background: var(--surface); }
-    .build-card-num {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--dim);
-      letter-spacing: 2px;
-      margin-bottom: 32px;
-    }
-    .build-card-icon {
-      width: 44px; height: 44px;
-      border-radius: 11px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 22px;
-      transition: border-color .3s, background .3s;
-    }
-    .build-card:hover .build-card-icon {
-      border-color: rgba(201,168,76,0.3);
-      background: rgba(201,168,76,0.06);
-    }
-    .build-card-icon svg { width: 18px; height: 18px; color: var(--gold); }
-    .build-card h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: -0.4px;
-      color: var(--white);
-      margin-bottom: 10px;
-    }
-    .build-card p {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-    .build-card-arrow {
-      position: absolute;
-      bottom: 28px; right: 28px;
-      opacity: 0;
-      transform: translate(-4px, 4px);
-      transition: opacity .3s, transform .3s var(--ease);
-    }
-    .build-card:hover .build-card-arrow {
-      opacity: 1;
-      transform: translate(0, 0);
-    }
-    .build-card-arrow svg { width: 16px; height: 16px; color: var(--gold); }
 
-    /* ═══════════════════════════════════════════
-       STANDARDS / METRICS
-    ═══════════════════════════════════════════ */
-    .metrics-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
+    /* Aurora */
+    .hero-aurora{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .aurora-blob{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform,opacity}
+    .aurora-blob:nth-child(1){width:600px;height:500px;background:radial-gradient(ellipse,rgba(10,132,255,.11) 0%,transparent 70%);top:-5%;left:5%;animation:ab1 18s ease-in-out infinite alternate}
+    .aurora-blob:nth-child(2){width:400px;height:350px;background:radial-gradient(ellipse,rgba(191,90,242,.08) 0%,transparent 70%);top:40%;left:35%;animation:ab2 22s ease-in-out infinite alternate}
+    .aurora-blob:nth-child(3){width:350px;height:300px;background:radial-gradient(ellipse,rgba(48,209,88,.06) 0%,transparent 70%);bottom:0;left:-5%;animation:ab3 20s ease-in-out infinite alternate}
+    @keyframes ab1{0%{transform:translate(0,0)}100%{transform:translate(30px,-20px)}}
+    @keyframes ab2{0%{transform:translate(0,0)}100%{transform:translate(-20px,25px)}}
+    @keyframes ab3{0%{transform:translate(0,0)}100%{transform:translate(15px,-15px)}}
+
+    /* LEFT */
+    .hero-left{display:flex;flex-direction:column;padding-top:64px}
+
+    /* Badge */
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:9px;
+      margin-bottom:32px;padding:6px 14px 6px 9px;
+      border-radius:100px;width:fit-content;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.09);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    }
+    .badge-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;position:relative}
+    .badge-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:rgba(48,209,88,.28);animation:bpulse 2.2s ease-out infinite}
+    @keyframes bpulse{0%{transform:scale(.6);opacity:1}100%{transform:scale(2.2);opacity:0}}
+    .hero-badge span{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:1.4px;text-transform:uppercase;color:rgba(245,245,247,.4)}
+
+    /* Heading */
+    h1.htitle{
+      font-size:clamp(3rem,5.5vw,5.6rem);
+      font-weight:800;line-height:.95;letter-spacing:-3.5px;
+      margin-bottom:24px;
+    }
+    .ht1{display:block;color:var(--w)}
+    .ht2{
+      display:block;
+      background:linear-gradient(95deg,var(--blue) 0%,var(--cyan) 40%,var(--green) 75%,var(--neon) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      filter:drop-shadow(0 0 50px rgba(10,132,255,.3));
     }
 
-    .metrics-list {
-      margin-top: 40px;
-    }
-    .metric-row {
-      padding: 24px 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 24px;
-    }
-    .metric-row:first-child { border-top: 1px solid var(--border); }
-    .metric-name {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--white);
-    }
-    .metric-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .metric-bar-wrap {
-      width: 120px; height: 3px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 100px;
-      overflow: hidden;
-    }
-    .metric-bar {
-      height: 100%;
-      border-radius: 100px;
-      background: linear-gradient(90deg, var(--gold), var(--gold2));
-      width: 0%;
-      transition: width 1.4s var(--ease);
-    }
-    .metric-val {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--gold);
-      width: 36px;
-      text-align: right;
+    /* Description */
+    .hero-desc{
+      font-size:.93rem;line-height:1.85;
+      color:#3e3e55;
+      max-width:400px;margin-bottom:36px;
     }
 
-    .metrics-visual {
-      position: relative;
+    /* Buttons */
+    .hero-btns{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .btn-primary{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:13px 26px;border-radius:9px;
+      background:var(--blue);color:#fff;
+      font-size:.85rem;font-weight:600;
+      transition:background .2s,transform .35s var(--ease),box-shadow .35s var(--ease);
+      position:relative;overflow:hidden;
     }
-    .metrics-card {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--bg2);
-      overflow: hidden;
+    .btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.1) 0%,transparent 60%);opacity:0;transition:opacity .25s}
+    .btn-primary:hover{background:#1a8fff;transform:translateY(-2px);box-shadow:0 14px 40px rgba(10,132,255,.35)}
+    .btn-primary:hover::after{opacity:1}
+    .btn-primary:active{transform:translateY(0)}
+    .btn-primary svg{width:15px;height:15px}
+    .btn-ghost{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:12px 22px;border-radius:9px;
+      border:1px solid var(--b);color:var(--muted);
+      font-size:.85rem;font-weight:500;
+      transition:border-color .25s,color .25s,transform .35s var(--ease),background .25s;
     }
-    .metrics-card-header {
-      padding: 28px 32px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .metrics-card-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
-    .metrics-card-badge {
-      padding: 4px 10px;
-      border-radius: 100px;
-      background: rgba(58,92,204,0.15);
-      border: 1px solid rgba(91,127,255,0.2);
-      font-size: 0.68rem;
-      font-family: 'Space Mono', monospace;
-      color: var(--accent2);
-      letter-spacing: 1px;
-    }
-    .metrics-big-num {
-      padding: 36px 32px;
-      border-bottom: 1px solid var(--border);
-    }
-    .metrics-big-num .big {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 4rem;
-      font-weight: 700;
-      letter-spacing: -3px;
-      line-height: 1;
-      color: var(--white);
-    }
-    .metrics-big-num .big span { color: var(--gold); }
-    .metrics-big-num .sub {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-    .metrics-pills-row {
-      padding: 22px 32px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .m-pill {
-      padding: 6px 14px;
-      border-radius: 100px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      font-size: 0.73rem;
-      color: var(--muted);
+    .btn-ghost:hover{border-color:var(--b2);color:var(--w);transform:translateY(-2px);background:rgba(255,255,255,.02)}
+    .btn-ghost:active{transform:translateY(0)}
+
+    /* RIGHT */
+    .hero-right{
+      position:relative;display:flex;
+      align-items:center;justify-content:center;
+      padding-top:64px;height:100%;
+      min-height:500px;
     }
 
-    /* ═══════════════════════════════════════════
-       CONTACT
-    ═══════════════════════════════════════════ */
-    .contact-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      background: var(--bg2);
+    /* Main glass panel */
+    .hero-glass{
+      position:relative;
+      width:100%;max-width:340px;
+      border-radius:20px;
+      background:rgba(10,10,20,.75);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+      padding:28px;
+      box-shadow:0 30px 70px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03) inset;
+      animation:glassFloat 11s ease-in-out infinite;
+      will-change:transform;
     }
-    .contact-left {
-      padding: 72px 56px;
-      background: var(--bg2);
-      border-right: 1px solid var(--border);
+    .hero-glass::before{
+      content:'';position:absolute;
+      top:0;left:20%;right:20%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
     }
-    .contact-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 700;
-      letter-spacing: -2px;
-      line-height: 1.1;
-      margin: 24px 0 18px;
-    }
-    .contact-title em { font-style: normal; color: var(--gold); }
-    .contact-text {
-      font-size: 0.92rem;
-      line-height: 1.8;
-      color: var(--muted);
-      margin-bottom: 44px;
-    }
-    .contact-email-block {
-      margin-bottom: 36px;
-    }
-    .contact-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 8px;
-    }
-    .contact-email {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      color: var(--white);
-      transition: color .25s;
-    }
-    .contact-email:hover { color: var(--gold); }
-    .contact-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    @keyframes glassFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
-    .contact-right {
-      padding: 72px 56px;
+    .hg-label{
+      font-family:'JetBrains Mono',monospace;
+      font-size:.55rem;letter-spacing:2px;text-transform:uppercase;
+      color:var(--dim);margin-bottom:20px;
     }
-    .contact-info-list {
-      list-style: none;
-      margin-top: 32px;
+    .hg-app-row{
+      display:flex;align-items:center;gap:12px;
+      padding:14px;border-radius:12px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      margin-bottom:10px;
     }
-    .contact-info-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 18px;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--border);
+    .hg-app-icon{
+      width:36px;height:36px;border-radius:10px;
+      overflow:hidden;flex-shrink:0;
+      border:1px solid rgba(255,255,255,.08);
     }
-    .contact-info-item:first-child { border-top: 1px solid var(--border); }
-    .cii-icon {
-      width: 38px; height: 38px;
-      border-radius: 9px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+    .hg-app-icon img{width:100%;height:100%;object-fit:cover}
+    .hg-app-name{font-size:.85rem;font-weight:600;color:var(--w);letter-spacing:-.2px}
+    .hg-app-sub{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.8px;color:var(--dim);margin-top:2px}
+    .hg-status{
+      margin-left:auto;display:flex;align-items:center;gap:5px;
+      padding:3px 9px;border-radius:100px;
+      background:rgba(48,209,88,.08);border:1px solid rgba(48,209,88,.16);
+      flex-shrink:0;
     }
-    .cii-icon svg { width: 15px; height: 15px; color: var(--gold); }
-    .cii-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 5px;
+    .hg-status-dot{width:4px;height:4px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .hg-status span{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.8px;color:var(--green)}
+
+    .hg-divider{height:1px;background:rgba(255,255,255,.05);margin:16px 0}
+
+    .hg-platform{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 14px;border-radius:10px;
+      background:rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.05);
     }
-    .cii-value {
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--white);
+    .hg-platform-lbl{font-size:.75rem;color:var(--muted)}
+    .hg-platform-val{
+      font-family:'JetBrains Mono',monospace;
+      font-size:.65rem;letter-spacing:.8px;
+      color:var(--blue);
     }
 
-    /* ═══════════════════════════════════════════
-       FOOTER
-    ═══════════════════════════════════════════ */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 60px 56px 40px;
+    /* Micro cards */
+    .micro-card{
+      position:absolute;
+      border-radius:14px;
+      background:rgba(8,8,18,.82);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      padding:14px 16px;
+      box-shadow:0 16px 40px rgba(0,0,0,.4);
+      will-change:transform;
+      transition:box-shadow .3s,border-color .3s;
     }
-    .footer-inner {
-      max-width: 1400px;
-      margin: 0 auto;
+    .micro-card::before{
+      content:'';position:absolute;
+      top:0;left:20%;right:20%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);
     }
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 60px;
-      margin-bottom: 56px;
-      flex-wrap: wrap;
+    .mc-icon{
+      width:24px;height:24px;border-radius:7px;
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:8px;
     }
-    .footer-brand { max-width: 320px; }
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .footer-logo img { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border); }
-    .footer-logo-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-    .footer-desc {
-      font-size: 0.83rem;
-      color: var(--muted);
-      line-height: 1.75;
-    }
-    .footer-cols {
-      display: flex;
-      gap: 80px;
-      flex-wrap: wrap;
-    }
-    .footer-col h5 {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 20px;
-    }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 13px; }
-    .footer-col a {
-      font-size: 0.86rem;
-      color: var(--muted);
-      transition: color .25s;
-    }
-    .footer-col a:hover { color: var(--white); }
-    .footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 28px;
-      border-top: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-    .footer-copy {
-      font-size: 0.76rem;
-      color: var(--dim);
-      font-family: 'Space Mono', monospace;
-    }
-    .footer-dev {
-      font-size: 0.76rem;
-      color: var(--dim);
-    }
-    .footer-dev strong { color: var(--muted); font-weight: 500; }
+    .mc-icon svg{width:11px;height:11px}
+    .mc-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+    .mc-val{font-size:.8rem;font-weight:700;letter-spacing:-.2px}
 
-    /* ═══════════════════════════════════════════
-       REVEAL ANIMATIONS
-    ═══════════════════════════════════════════ */
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .75s var(--ease2), transform .75s var(--ease2);
-    }
-    .reveal.in { opacity: 1; transform: translateY(0); }
-    .reveal-d1 { transition-delay: .08s; }
-    .reveal-d2 { transition-delay: .16s; }
-    .reveal-d3 { transition-delay: .24s; }
-    .reveal-d4 { transition-delay: .32s; }
+    .mc-perf{top:10%;right:-4%;animation:mcf1 9s ease-in-out infinite}
+    .mc-priv{bottom:14%;right:-6%;animation:mcf2 11s ease-in-out infinite}
+    @keyframes mcf1{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-10px) rotate(.5deg)}}
+    @keyframes mcf2{0%,100%{transform:translateY(0) rotate(.5deg)}50%{transform:translateY(-8px) rotate(-.5deg)}}
 
-    /* ═══════════════════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════════════════ */
-    @media (max-width: 1100px) {
-      .build-grid { grid-template-columns: repeat(2, 1fr); }
-      .metrics-layout { grid-template-columns: 1fr; gap: 48px; }
+    /* Scroll indicator */
+    .hero-scroll{
+      position:absolute;bottom:36px;left:52px;
+      display:flex;flex-direction:column;align-items:center;gap:8px;z-index:10;
+    }
+    .scroll-mouse{
+      width:20px;height:32px;border-radius:10px;
+      border:1px solid rgba(255,255,255,.15);
+      display:flex;justify-content:center;padding-top:5px;
+    }
+    .scroll-wheel{
+      width:2px;height:5px;border-radius:2px;
+      background:rgba(255,255,255,.35);
+      animation:swheel 2.4s ease-in-out infinite;
+    }
+    @keyframes swheel{0%{transform:translateY(0);opacity:1}60%{transform:translateY(10px);opacity:0}61%{transform:translateY(0);opacity:0}100%{transform:translateY(0);opacity:1}}
+    .scroll-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+
+    /* Hero entrance animations */
+    .hero-badge       {animation:fadeUp .7s var(--ease) .1s both}
+    h1.htitle         {animation:fadeUp .8s var(--ease) .18s both}
+    .hero-desc        {animation:fadeUp .8s var(--ease) .28s both}
+    .hero-btns        {animation:fadeUp .8s var(--ease) .36s both}
+    .hero-glass       {animation:glassFloat 11s ease-in-out infinite, fadeScale .9s var(--ease) .3s both}
+    .mc-perf          {animation:mcf1 9s ease-in-out infinite, fadeUp .7s var(--ease) .5s both}
+    .mc-priv          {animation:mcf2 11s ease-in-out infinite, fadeUp .7s var(--ease) .6s both}
+    .hero-scroll      {animation:fadeUp .8s var(--ease) .8s both}
+
+    @keyframes fadeUp  {from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeScale{from{opacity:0;transform:scale(.96) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+    /* ════ REST OF SITE (unchanged) ════ */
+    .cards3d-section{position:relative;z-index:1;padding:100px 52px}
+    .cards3d-row{display:flex;gap:20px;perspective:1200px;justify-content:center;flex-wrap:wrap}
+
+    /* Glass cards */
+    .c3d{
+      width:230px;height:290px;border-radius:22px;
+      padding:28px 24px;
+      display:flex;flex-direction:column;justify-content:space-between;
+      transform-style:preserve-3d;
+      transition:transform .45s var(--ease),box-shadow .45s,border-color .4s;
+      cursor:none;position:relative;overflow:hidden;
+
+      /* Glass base */
+      background:rgba(14,14,26,.65);
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:0 8px 32px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.04) inset;
     }
 
-    @media (max-width: 900px) {
-      nav { padding: 0 24px; }
-      .nav-center { display: none; }
-      .nav-right .nav-mail { display: none; }
-
-      .hero { padding: 0 24px 60px; }
-      .hero-top-label { left: 24px; }
-      .hero-index { display: none; }
-      h1.hero-title { letter-spacing: -2px; }
-      .hero-bottom { flex-direction: column; align-items: flex-start; }
-
-      .numbers-strip { grid-template-columns: repeat(2, 1fr); }
-      .number-cell { padding: 28px 28px; }
-      .number-cell:nth-child(2) { border-right: none; }
-      .number-cell:nth-child(3) { border-top: 1px solid var(--border); }
-
-      .section { padding: 72px 24px; }
-      .section-sm { padding-top: 56px; padding-bottom: 56px; }
-      .hr { margin: 0 24px; }
-
-      .app-section { padding: 72px 24px; }
-      .app-layout { grid-template-columns: 1fr; }
-      .app-info { padding: 40px 32px; border-right: none; border-bottom: 1px solid var(--border); }
-      .app-image-pane { min-height: 360px; }
-      .app-disclaimer { padding: 16px 32px; }
-
-      .about-layout { grid-template-columns: 1fr; gap: 48px; }
-      .about-right { padding-top: 0; }
-
-      .build-header { flex-direction: column; align-items: flex-start; }
-
-      .contact-layout { grid-template-columns: 1fr; }
-      .contact-left { border-right: none; border-bottom: 1px solid var(--border); padding: 48px 32px; }
-      .contact-right { padding: 48px 32px; }
-
-      footer { padding: 48px 24px 32px; }
-      .footer-top { flex-direction: column; gap: 40px; }
+    /* Top highlight line */
+    .c3d::before{
+      content:'';position:absolute;
+      top:0;left:15%;right:15%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+      border-radius:100%;
+      transition:opacity .4s;
     }
 
-    @media (max-width: 600px) {
-      .build-grid { grid-template-columns: 1fr; }
-      .app-features { grid-template-columns: 1fr; }
-      .hero-actions { flex-direction: column; width: 100%; }
-      .btn-gold, .btn-outline { justify-content: center; }
-      .footer-cols { flex-direction: column; gap: 36px; }
-      .contact-btns { flex-direction: column; }
+    /* Colored glow on hover */
+    .c3d::after{
+      content:'';position:absolute;inset:0;
+      opacity:0;transition:opacity .45s;border-radius:22px;
+      pointer-events:none;
+    }
+    .c3d:nth-child(1)::after{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(255,45,85,.18),transparent 70%)}
+    .c3d:nth-child(2)::after{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(10,132,255,.18),transparent 70%)}
+    .c3d:nth-child(3)::after{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(48,209,88,.15),transparent 70%)}
+    .c3d:nth-child(4)::after{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(191,90,242,.16),transparent 70%)}
 
-      .cursor, .cur { display: none !important; }
-      body { cursor: auto; }
+    .c3d:hover{box-shadow:0 28px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.07) inset}
+    .c3d:hover::after{opacity:1}
+    .c3d:nth-child(1):hover{border-color:rgba(255,45,85,.3)}
+    .c3d:nth-child(2):hover{border-color:rgba(10,132,255,.3)}
+    .c3d:nth-child(3):hover{border-color:rgba(48,209,88,.28)}
+    .c3d:nth-child(4):hover{border-color:rgba(191,90,242,.28)}
+
+    .c3d-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+    .c3d-icon svg{width:20px;height:20px}
+    .ic-red{background:rgba(255,45,85,.1);border:1px solid rgba(255,45,85,.2);color:var(--red);box-shadow:0 0 18px rgba(255,45,85,.12)}
+    .ic-blue{background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.2);color:var(--blue);box-shadow:0 0 18px rgba(10,132,255,.12)}
+    .ic-green{background:rgba(48,209,88,.08);border:1px solid rgba(48,209,88,.18);color:var(--green);box-shadow:0 0 18px rgba(48,209,88,.1)}
+    .ic-neon{background:rgba(191,90,242,.08);border:1px solid rgba(191,90,242,.18);color:var(--neon);box-shadow:0 0 18px rgba(191,90,242,.1)}
+    .c3d h3{font-size:1rem;font-weight:700;letter-spacing:-.3px;color:var(--w);position:relative;z-index:1}
+    .c3d p{font-size:.78rem;color:var(--muted);line-height:1.68;position:relative;z-index:1}
+    .c3d-num{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--dim);letter-spacing:2.5px;position:relative;z-index:1}
+
+    .mq{
+      overflow:hidden;padding:15px 0;position:relative;
+      background:rgba(10,10,20,.55);
+      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    }
+    .mq::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(10,132,255,.4),rgba(191,90,242,.3),rgba(48,209,88,.3),transparent);
+    }
+    .mq::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(48,209,88,.28),rgba(10,132,255,.32),rgba(191,90,242,.24),transparent);
+    }
+    .mq-track{display:flex;width:max-content;animation:mqa 38s linear infinite}
+    @keyframes mqa{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .mq-item{display:flex;align-items:center;gap:10px;padding:0 32px;border-right:1px solid rgba(255,255,255,.05);font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:1.2px;white-space:nowrap;color:rgba(255,255,255,.28);text-transform:uppercase}
+    .mq-sep{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+    .s{position:relative;z-index:1;padding:110px 52px;max-width:1360px;margin:0 auto}
+    .s-sm{padding-top:72px;padding-bottom:72px}
+    .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+    .eyebrow-bar{width:22px;height:1px}
+    .stitle{font-size:clamp(2rem,4vw,3.4rem);font-weight:800;letter-spacing:-2px;line-height:1.06;color:var(--w)}
+    .stitle em{font-style:normal}
+    .sdesc{font-size:.92rem;line-height:1.85;color:var(--muted);margin-top:18px;max-width:460px}
+    .hr{height:1px;background:var(--b);margin:0 52px}
+    .app-s{position:relative;z-index:1;padding:100px 52px}
+    .app-top{max-width:1360px;margin:0 auto}
+    .app-meta{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;margin-bottom:60px}
+    .app-tag{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 7px;border-radius:100px;background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.2);margin-bottom:24px}
+    .app-tag-icon{width:18px;height:18px;border-radius:50%;overflow:hidden;flex-shrink:0}
+    .app-tag-icon img{width:100%;height:100%;object-fit:cover}
+    .app-tag span{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:1px;text-transform:uppercase;color:var(--blue)}
+    .app-name{font-size:clamp(2.4rem,5vw,4rem);font-weight:800;letter-spacing:-2.5px;line-height:.95;margin-bottom:8px}
+    .app-subtitle{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:1px;margin-bottom:24px}
+    .app-desc{font-size:.95rem;line-height:1.88;color:#4A4A62}
+    .app-features{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b);border:1px solid var(--b);border-radius:14px;overflow:hidden}
+    .app-feat{background:var(--bg2);padding:18px 20px;display:flex;align-items:flex-start;gap:13px;transition:background .3s}
+    .app-feat:hover{background:var(--s1)}
+    .af-icon{width:32px;height:32px;border-radius:8px;background:var(--s1);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .3s}
+    .app-feat:hover .af-icon{border-color:rgba(10,132,255,.3)}
+    .af-icon svg{width:13px;height:13px;color:var(--blue)}
+    .af-t strong{display:block;font-size:.78rem;font-weight:600;color:var(--w);margin-bottom:2px}
+    .af-t span{font-size:.72rem;color:var(--muted);line-height:1.45}
+    .app-cta{display:flex;align-items:center;gap:18px;margin-top:32px;flex-wrap:wrap}
+    .play-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:10px;background:linear-gradient(135deg,var(--green),#25a847);color:#031209;font-weight:700;font-size:.88rem;letter-spacing:-.1px;transition:all .25s var(--ease)}
+    .play-btn:hover{transform:translateY(-2px);box-shadow:0 14px 44px rgba(48,209,88,.3);filter:brightness(1.06)}
+    .play-btn svg{width:18px;height:18px}
+    .play-note{font-size:.72rem;color:var(--dim);line-height:1.5}
+    .play-note strong{display:block;color:var(--muted);margin-bottom:2px}
+    .ss-wrap{max-width:1360px;margin:0 auto;position:relative}
+    .ss-16x9{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:1px solid var(--b);background:#060610;box-shadow:0 40px 100px rgba(0,0,0,.55)}
+    .ss-16x9 img{width:100%;height:100%;object-fit:cover;display:block}
+    .ss-glow{position:absolute;inset:-60px;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(10,132,255,.1),transparent 70%);pointer-events:none;z-index:-1}
+    .ss-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+    .about-p{font-size:.95rem;line-height:1.95;color:#3e3e58;margin-bottom:20px;letter-spacing:.1px}
+    .vals{list-style:none;border-top:1px solid rgba(255,255,255,.06);margin-top:40px}
+    .val{
+      display:flex;align-items:flex-start;gap:18px;
+      padding:20px 18px;
+      border-bottom:1px solid rgba(255,255,255,.05);
+      border-radius:12px;
+      transition:background .3s, border-color .3s;
+      margin-bottom:4px;
+    }
+    .val:hover{
+      background:rgba(255,255,255,.03);
+      border-color:rgba(255,255,255,.08);
+    }
+    .val-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:8px}
+    .val-body strong{display:block;font-size:.9rem;font-weight:700;color:var(--w);margin-bottom:6px;letter-spacing:-.2px}
+    .val-body p{font-size:.8rem;color:#3e3e58;line-height:1.72}
+    .build-hdr{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:48px;flex-wrap:wrap}
+    .build-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+    .bc{
+      padding:36px 28px;position:relative;
+      border-radius:18px;
+      background:rgba(12,12,24,.65);
+      backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      border:1px solid rgba(255,255,255,.07);
+      box-shadow:0 8px 28px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.03) inset;
+      transition:background .35s, border-color .35s, transform .35s var(--ease), box-shadow .35s;
+      overflow:hidden;
+    }
+    .bc::before{
+      content:'';position:absolute;
+      top:0;left:20%;right:20%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);
+    }
+    .bc::after{
+      content:'';position:absolute;inset:0;
+      opacity:0;transition:opacity .35s;border-radius:18px;pointer-events:none;
+    }
+    .bc:nth-child(1)::after{background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,45,85,.1),transparent 70%)}
+    .bc:nth-child(2)::after{background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(10,132,255,.1),transparent 70%)}
+    .bc:nth-child(3)::after{background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(48,209,88,.09),transparent 70%)}
+    .bc:nth-child(4)::after{background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(191,90,242,.09),transparent 70%)}
+    .bc:hover{
+      background:rgba(16,16,30,.75);
+      transform:translateY(-3px);
+      box-shadow:0 20px 50px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.06) inset;
+    }
+    .bc:hover::after{opacity:1}
+    .bc:nth-child(1):hover{border-color:rgba(255,45,85,.22)}
+    .bc:nth-child(2):hover{border-color:rgba(10,132,255,.22)}
+    .bc:nth-child(3):hover{border-color:rgba(48,209,88,.2)}
+    .bc:nth-child(4):hover{border-color:rgba(191,90,242,.2)}
+    .bc-n{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--dim);letter-spacing:2.5px;margin-bottom:28px;position:relative;z-index:1}
+    .bc-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);transition:border-color .3s,background .3s;position:relative;z-index:1}
+    .bc:hover .bc-icon{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.06)}
+    .bc-icon svg{width:17px;height:17px}
+    .bc h3{font-size:.95rem;font-weight:700;letter-spacing:-.3px;color:var(--w);margin-bottom:8px;position:relative;z-index:1}
+    .bc p{font-size:.78rem;color:#3e3e58;line-height:1.7;position:relative;z-index:1}
+    .bc-arr{position:absolute;bottom:24px;right:24px;opacity:0;transform:translate(-4px,4px);transition:opacity .3s,transform .3s var(--ease);z-index:1}
+    .bc:hover .bc-arr{opacity:1;transform:translate(0,0)}
+    .bc-arr svg{width:14px;height:14px;color:var(--muted)}
+    .metrics-wrap{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+    .mbar-list{margin-top:36px}
+    .mbar{padding:22px 0;border-bottom:1px solid var(--b)}
+    .mbar:first-child{border-top:1px solid var(--b)}
+    .mbar-row{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px}
+    .mbar-name{font-size:.86rem;font-weight:500;color:var(--w)}
+    .mbar-val{font-family:'JetBrains Mono',monospace;font-size:.76rem;font-weight:600}
+    .mbar-track{height:3px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden}
+    .mbar-fill{height:100%;border-radius:100px;width:0%;transition:width 1.6s var(--ease)}
+    .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .dash-card{
+      border-radius:16px;
+      background:rgba(10,10,20,.7);
+      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      overflow:hidden;
+      transition:transform .35s var(--ease),box-shadow .35s;
+      position:relative;
+    }
+    .dash-card::before{
+      content:'';position:absolute;
+      top:0;left:15%;right:15%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+    }
+    .dash-card:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(0,0,0,.4)}
+    .dash-card.wide{grid-column:span 2}
+    .dash-card-h{padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center}
+    .dash-card-title{font-size:.75rem;font-weight:600;color:var(--muted);letter-spacing:.2px}
+    .dash-card-badge{padding:3px 9px;border-radius:100px;font-size:.56rem;font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+    .badge-green{background:rgba(48,209,88,.08);border:1px solid rgba(48,209,88,.18);color:var(--green)}
+    .badge-blue{background:rgba(10,132,255,.08);border:1px solid rgba(10,132,255,.18);color:var(--blue)}
+    .badge-neon{background:rgba(191,90,242,.08);border:1px solid rgba(191,90,242,.18);color:var(--neon)}
+    .badge-orange{background:rgba(255,159,10,.08);border:1px solid rgba(255,159,10,.18);color:var(--orange)}
+    .dash-card-body{padding:22px}
+    .dash-big{font-size:2.2rem;font-weight:800;letter-spacing:-2px;line-height:1}
+    .dash-sub{font-size:.72rem;color:#3e3e58;margin-top:6px;line-height:1.55}
+    .dash-tags{padding:16px 22px;display:flex;gap:7px;flex-wrap:wrap}
+    .dtag{padding:4px 11px;border-radius:100px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:.65rem;color:var(--muted)}
+    .privacy-s{position:relative;z-index:1}
+    .privacy-inner{max-width:1360px;margin:0 auto;padding:80px 52px}
+    .privacy-card{border:1px solid var(--b);border-radius:20px;background:var(--bg2);overflow:hidden;display:grid;grid-template-columns:1fr auto;align-items:center;gap:40px;padding:52px 60px;position:relative}
+    .privacy-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 50%,rgba(10,132,255,.07),transparent 60%);pointer-events:none}
+    .privacy-icon{width:56px;height:56px;border-radius:16px;background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:20px}
+    .privacy-icon svg{width:24px;height:24px;color:var(--blue)}
+    .privacy-txt h3{font-size:1.4rem;font-weight:700;letter-spacing:-.6px;margin-bottom:12px;color:var(--w)}
+    .privacy-txt p{font-size:.88rem;line-height:1.82;color:var(--muted);max-width:580px}
+    .privacy-action{flex-shrink:0}
+    .btn-privacy{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:9px;border:1px solid var(--b2);color:var(--w);font-size:.84rem;font-weight:600;transition:border-color .25s,background .25s,transform .3s var(--ease)}
+    .btn-privacy:hover{border-color:rgba(10,132,255,.4);background:rgba(10,132,255,.06);transform:translateY(-2px)}
+    .btn-privacy svg{width:15px;height:15px}
+    .ct-wrap{
+      display:grid;grid-template-columns:1fr 1fr;gap:60px;
+      border-radius:22px;
+      background:rgba(10,10,20,.68);
+      backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 24px 64px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.03) inset;
+      padding:60px 52px;
+      position:relative;
+      overflow:hidden;
+    }
+    .ct-wrap::before{
+      content:'';position:absolute;
+      top:0;left:20%;right:20%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
+    }
+    .ct-wrap::after{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 60% 70% at 0% 50%,rgba(10,132,255,.06),transparent 60%);
+      pointer-events:none;
+    }
+    .ct-l{position:relative;z-index:1}
+    .ct-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-2px;line-height:1.08;margin:20px 0 16px}
+    .ct-txt{font-size:.9rem;line-height:1.85;color:#3e3e58;margin-bottom:36px;max-width:360px}
+    .ct-email-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+    .ct-email{font-size:1.05rem;font-weight:600;letter-spacing:-.4px;color:var(--w);transition:color .2s;display:block;margin-bottom:28px}
+    .ct-email:hover{color:var(--blue)}
+    .ct-btns{display:flex;gap:12px;flex-wrap:wrap}
+    .ct-r{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;}
+
+    /* Chips */
+    .ct-chips{display:flex;flex-direction:column;gap:10px}
+    .ct-chip{
+      display:flex;align-items:center;gap:12px;
+      padding:13px 18px;border-radius:12px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
+      transition:background .25s,border-color .25s;
+    }
+    .ct-chip:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.11)}
+    .ct-chip-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .ct-chip-txt{font-size:.82rem;font-weight:500;color:rgba(245,245,247,.6)}
+    footer{
+      position:relative;z-index:1;
+      padding:56px 52px 36px;
+      background:rgba(8,8,16,.72);
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    }
+    footer::before{
+      content:'';position:absolute;
+      top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(10,132,255,.35),rgba(191,90,242,.28),rgba(48,209,88,.25),transparent);
+    }
+    .ft{max-width:1360px;margin:0 auto}
+    .ft-top{display:flex;justify-content:space-between;align-items:flex-start;gap:60px;margin-bottom:48px;flex-wrap:wrap}
+    .ft-brand{max-width:300px}
+    .ft-logo{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+    .ft-logo img{width:24px;height:24px;border-radius:6px;border:1px solid rgba(255,255,255,.08)}
+    .ft-logo-t{font-size:.95rem;font-weight:700;letter-spacing:-.3px}
+    .ft-desc{font-size:.8rem;color:#3a3a52;line-height:1.8}
+    .ft-cols{display:flex;gap:72px;flex-wrap:wrap}
+    .ft-col h5{
+      font-family:'JetBrains Mono',monospace;font-size:.56rem;
+      letter-spacing:2.5px;text-transform:uppercase;
+      color:var(--dim);margin-bottom:20px;
+    }
+    .ft-col ul{list-style:none;display:flex;flex-direction:column;gap:13px}
+    .ft-col a{
+      font-size:.82rem;color:#3a3a52;
+      transition:color .2s, padding-left .2s;
+      display:inline-block;
+      position:relative;
+    }
+    .ft-col a::before{
+      content:'';position:absolute;
+      left:-10px;top:50%;transform:translateY(-50%);
+      width:3px;height:3px;border-radius:50%;
+      background:var(--blue);
+      opacity:0;transition:opacity .2s;
+    }
+    .ft-col a:hover{color:var(--w);padding-left:6px}
+    .ft-col a:hover::before{opacity:1}
+    .ft-bottom{
+      display:flex;justify-content:space-between;align-items:center;
+      padding-top:28px;
+      border-top:1px solid rgba(255,255,255,.05);
+      flex-wrap:wrap;gap:12px;
+    }
+    .ft-copy{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--dim)}
+    .ft-dev{font-size:.72rem;color:var(--dim)}
+    .rv{opacity:0;transform:translateY(26px);transition:opacity .72s var(--ease),transform .72s var(--ease)}
+    .rv.in{opacity:1;transform:translateY(0)}
+    .d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}.d4{transition-delay:.28s}
+
+    @media(max-width:1050px){
+      .hero{grid-template-columns:1fr;padding-bottom:120px}
+      .hero-right{height:460px;min-height:auto}
+      .build-grid{grid-template-columns:repeat(2,1fr)}
+      .metrics-wrap{grid-template-columns:1fr;gap:52px}
+      .privacy-card{grid-template-columns:1fr;gap:28px;padding:40px 36px}
+    }
+    @media(max-width:860px){
+      nav{padding:0 20px}
+      .nlinks{display:none}
+      .hero{padding:0 20px;padding-bottom:100px;gap:32px}
+      .hero-scroll{left:20px}
+      h1.htitle{letter-spacing:-2px}
+      .cards3d-section{padding:72px 20px}
+      .nums{grid-template-columns:repeat(2,1fr)}
+      .num-c:nth-child(2){border-right:none}
+      .num-c:nth-child(3){border-top:1px solid var(--b)}
+      .s{padding:72px 20px}
+      .hr{margin:0 20px}
+      .app-s{padding:72px 20px}
+      .app-meta{grid-template-columns:1fr;gap:40px}
+      .about-grid{grid-template-columns:1fr;gap:48px}
+      .build-hdr{flex-direction:column;align-items:flex-start}
+      .ct-wrap{grid-template-columns:1fr;padding:44px 28px;gap:40px}
+      .privacy-inner{padding:60px 20px}
+      .privacy-card{padding:36px 28px}
+      footer{padding:44px 20px 28px}
+      .ft-top{flex-direction:column;gap:36px}
+    }
+    @media(max-width:580px){
+      .build-grid{grid-template-columns:1fr}
+      .app-features{grid-template-columns:1fr}
+      .hero-btns{flex-direction:column;width:100%}
+      .btn-primary,.btn-ghost,.play-btn{justify-content:center}
+      .ft-cols{flex-direction:column;gap:30px}
+      .dash-grid{grid-template-columns:1fr}
+      .dash-card.wide{grid-column:span 1}
+      #cur,.cr{display:none!important}
+      body{cursor:auto}
+      .hero-right{display:none}
+      .hero{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
 
-  <div class="grain" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<canvas id="three-canvas" aria-hidden="true"></canvas>
+<div id="cur"><div class="cd"></div></div>
+<div class="cr" id="cr"></div>
 
-  <!-- CUSTOM CURSOR -->
-  <div class="cur" id="curDot"><div class="cur-dot"></div></div>
-  <div class="cur" id="curRing"><div class="cur-ring"></div></div>
+<nav id="nav">
+  <a href="#top" class="nlogo" aria-label="BlockWave Studios">
+    <img src="blockwave-logo.jpg" alt="" width="26" height="26">
+    <span class="nlogo-txt">Block<span class="dot">Wave</span></span>
+  </a>
+  <ul class="nlinks">
+    <li><a href="#app">Applications</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#build">Products</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener" class="nbtn">Google Play →</a>
+</nav>
 
-  <!-- ════════════════════════════════════
-       NAV
-  ════════════════════════════════════ -->
-  <nav id="nav">
-    <a href="#top" class="nav-logo" aria-label="BlockWave Studios">
-      <img src="blockwave-logo.jpg" alt="" width="28" height="28">
-      <span class="nav-logo-text">Block<span>Wave</span></span>
-    </a>
-    <ul class="nav-center">
-      <li><a href="#app">App</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#build">Work</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="nav-right">
-      <span class="nav-mail">studiosblockwave@gmail.com</span>
-      <a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener" class="nav-btn">Google Play →</a>
-    </div>
-  </nav>
+<main id="top">
 
-  <main id="top">
+<!-- HERO -->
+<section class="hero" aria-label="Introduction">
 
-  <!-- ════════════════════════════════════
-       HERO
-  ════════════════════════════════════ -->
-  <section class="hero" aria-label="Introduction">
-    <div class="hero-bg-grid" aria-hidden="true"></div>
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="hero-glow2" aria-hidden="true"></div>
+  <div class="hero-aurora" aria-hidden="true">
+    <div class="aurora-blob"></div>
+    <div class="aurora-blob"></div>
+    <div class="aurora-blob"></div>
+  </div>
 
-    <div class="hero-top-label" aria-hidden="true">Independent Android Studio — India</div>
-    <div class="hero-index" aria-hidden="true">Est. 2024 — Gurugram, IN</div>
-
-    <div class="hero-content">
-      <div class="hero-kicker">
-        <div class="hero-kicker-line"></div>
-        <span>BlockWave Studios</span>
-      </div>
-
-      <h1 class="hero-title">
-        <span class="t1">We craft</span>
-        <span class="t2">Android apps</span>
-        <span class="t3">that last.</span>
-      </h1>
-
-      <div class="hero-bottom">
-        <p class="hero-desc">
-          An independent studio building <strong>performance-first</strong>, privacy-focused Android applications for everyday users. One team, sharp focus, real results.
-        </p>
-        <div class="hero-actions">
-          <a href="#app" class="btn-gold">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3C3.2 2.6 3 3.1 3 3.7v16.6c0 .6.2 1.1.6 1.4l9.4-9.7-9.4-9.7Z"/><path d="m13.7 11.9 3.4-3.5-9.2-5.3a1.3 1.3 0 0 0-1-.2l6.8 9Z"/><path d="m13.7 12.1-6.8 9c.3 0 .7-.1 1-.2l9.2-5.3-3.4-3.5Z"/><path d="m18.6 9.7-3.5 2 3.5 2c.9-.5 1.9-1.1 1.9-2s-1-1.5-1.9-2Z"/></svg>
-            Explore BTC Miner
-          </a>
-          <a href="#about" class="btn-outline">About Us</a>
-        </div>
-      </div>
+  <!-- LEFT -->
+  <div class="hero-left">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      <span>BlockWave Studios · Est. 2024</span>
     </div>
 
-    <div class="hero-scroll" aria-hidden="true">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
+    <h1 class="htitle">
+      <span class="ht1">Small studio.</span>
+      <span class="ht2">High standards.</span>
+    </h1>
 
-  <!-- ════════════════════════════════════
-       NUMBERS STRIP
-  ════════════════════════════════════ -->
-  <div class="numbers-strip reveal">
-    <div class="number-cell">
-      <div class="number-cell-idx">01</div>
-      <div class="number-cell-n">100<sup>%</sup></div>
-      <div class="number-cell-l">Android Native</div>
-    </div>
-    <div class="number-cell">
-      <div class="number-cell-idx">02</div>
-      <div class="number-cell-n">1</div>
-      <div class="number-cell-l">Active Application</div>
-    </div>
-    <div class="number-cell">
-      <div class="number-cell-idx">03</div>
-      <div class="number-cell-n">24<sup>/7</sup></div>
-      <div class="number-cell-l">Support Available</div>
-    </div>
-    <div class="number-cell">
-      <div class="number-cell-idx">04</div>
-      <div class="number-cell-n">0</div>
-      <div class="number-cell-l">Compromises on Privacy</div>
+    <p class="hero-desc">BlockWave Studios is an independent Android studio based in India — focused on building apps that are fast, private, and reliable.</p>
+
+    <div class="hero-btns">
+      <a href="#app" class="btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3C3.2 2.6 3 3.1 3 3.7v16.6c0 .6.2 1.1.6 1.4l9.4-9.7-9.4-9.7Z"/><path d="m13.7 11.9 3.4-3.5-9.2-5.3a1.3 1.3 0 0 0-1-.2l6.8 9Z"/><path d="m13.7 12.1-6.8 9c.3 0 .7-.1 1-.2l9.2-5.3-3.4-3.5Z"/><path d="m18.6 9.7-3.5 2 3.5 2c.9-.5 1.9-1.1 1.9-2s-1-1.5-1.9-2Z"/></svg>
+        Explore BTC Miner
+      </a>
+      <a href="#about" class="btn-ghost">About the Studio</a>
     </div>
   </div>
 
-  <!-- MARQUEE -->
-  <div class="marquee-wrap" aria-hidden="true">
-    <div class="marquee-track">
-      <span class="marquee-item"><span class="marquee-dot"></span>Android Native</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Privacy First</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Secure by Design</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>High Performance</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Clean Interface</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Regular Updates</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>India-Built</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Reliable Engineering</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Google Play</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Android Native</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Privacy First</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Secure by Design</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>High Performance</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Clean Interface</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Regular Updates</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>India-Built</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Reliable Engineering</span>
-      <span class="marquee-item"><span class="marquee-dot"></span>Google Play</span>
+  <!-- RIGHT -->
+  <div class="hero-right" aria-hidden="true">
+
+    <!-- Main glass card -->
+    <div class="hero-glass" id="heroGlass">
+      <div class="hg-label">Latest Release</div>
+      <div class="hg-app-row">
+        <div class="hg-app-icon"><img src="btc-miner-icon.jpg" alt="BTC Miner"></div>
+        <div>
+          <div class="hg-app-name">BTC Miner</div>
+          <div class="hg-app-sub">Virtual Mining Simulator</div>
+        </div>
+        <div class="hg-status">
+          <div class="hg-status-dot"></div>
+          <span>Live</span>
+        </div>
+      </div>
+      <div class="hg-divider"></div>
+      <div class="hg-platform">
+        <span class="hg-platform-lbl">Platform</span>
+        <span class="hg-platform-val">Google Play · Android</span>
+      </div>
     </div>
+
+    <!-- 2 micro cards -->
+    <div class="micro-card mc-perf">
+      <div class="mc-icon" style="background:rgba(48,209,88,.1);border:1px solid rgba(48,209,88,.16);color:var(--green)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
+      </div>
+      <div class="mc-lbl">Performance</div>
+      <div class="mc-val" style="color:var(--green)">Optimized</div>
+    </div>
+
+    <div class="micro-card mc-priv">
+      <div class="mc-icon" style="background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.16);color:var(--blue)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <div class="mc-lbl">Privacy</div>
+      <div class="mc-val" style="color:var(--blue)">Protected</div>
+    </div>
+
   </div>
 
-  <!-- ════════════════════════════════════
-       APP SPOTLIGHT
-  ════════════════════════════════════ -->
-  <div class="app-section" id="app">
-    <div class="app-layout reveal">
-      <!-- LEFT: info -->
-      <div class="app-info">
-        <div class="app-header">
-          <div class="app-tag">
-            <div class="app-tag-dot"><img src="btc-miner-icon.jpg" alt="BTC Miner icon"></div>
-            <span>Latest Release</span>
-          </div>
+  <!-- Scroll indicator -->
+  <div class="hero-scroll" aria-label="Scroll down">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+    <span class="scroll-lbl">Scroll</span>
+  </div>
 
-          <h2 class="app-name">BTC Miner</h2>
-          <p class="app-sub">Virtual Mining Simulator · Android</p>
+</section>
 
-          <p class="app-desc">
-            Explore how cryptocurrency mining works through an interactive, completely virtual experience. Start mining with a single tap, activate boosts to increase speed, and track your virtual progress on a real-time dashboard. Safe, educational, and built for curious minds.
-          </p>
+<!-- 3D CARDS -->
+<div class="cards3d-section rv">
+  <div class="cards3d-row" id="cards3d">
+    <div class="c3d">
+      <div class="c3d-num">01</div>
+      <div class="c3d-icon ic-red"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div>
+      <div><h3>Android Native</h3><p>Every application is built directly for Android — no cross-platform wrappers, no performance trade-offs.</p></div>
+    </div>
+    <div class="c3d">
+      <div class="c3d-num">02</div>
+      <div class="c3d-icon ic-blue"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg></div>
+      <div><h3>Privacy First</h3><p>Minimal data collection. Transparent policies. The studio does not collect what it does not need.</p></div>
+    </div>
+    <div class="c3d">
+      <div class="c3d-num">03</div>
+      <div class="c3d-icon ic-green"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div>
+      <div><h3>Performance First</h3><p>Responsiveness and speed are engineered in from the start — not optimised after the fact.</p></div>
+    </div>
+    <div class="c3d">
+      <div class="c3d-num">04</div>
+      <div class="c3d-icon ic-neon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><path d="M21 3v6h-6"/></svg></div>
+      <div><h3>Continuous Improvement</h3><p>Applications are maintained and updated after release. Shipping is the beginning, not the end.</p></div>
+    </div>
+  </div>
+</div>
 
-          <div class="app-features">
-            <div class="app-feature">
-              <div class="app-feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
-              </div>
-              <div class="app-feature-text">
-                <strong>Boost System</strong>
-                <span>Speed multipliers for your mining rate</span>
-              </div>
-            </div>
-            <div class="app-feature">
-              <div class="app-feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8V4m-3 0h6"/><path d="M3 13h18"/></svg>
-              </div>
-              <div class="app-feature-text">
-                <strong>Daily Rewards</strong>
-                <span>Check-in streaks with bonus drops</span>
-              </div>
-            </div>
-            <div class="app-feature">
-              <div class="app-feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
-              </div>
-              <div class="app-feature-text">
-                <strong>Google Sign-In</strong>
-                <span>One-tap sync, no passwords needed</span>
-              </div>
-            </div>
-            <div class="app-feature">
-              <div class="app-feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="18" cy="8" r="2.5"/><path d="M21 21v-1.5a3 3 0 0 0-2.5-3"/></svg>
-              </div>
-              <div class="app-feature-text">
-                <strong>Referral System</strong>
-                <span>Invite friends, both earn rewards</span>
-              </div>
-            </div>
-            <div class="app-feature">
-              <div class="app-feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-              </div>
-              <div class="app-feature-text">
-                <strong>Live Dashboard</strong>
-                <span>Speed, totals and earnings at a glance</span>
-              </div>
-            </div>
-            <div class="app-feature">
-              <div class="app-feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><path d="M21 3v6h-6"/></svg>
-              </div>
-              <div class="app-feature-text">
-                <strong>Regular Updates</strong>
-                <span>Ongoing improvements, always free</span>
-              </div>
-            </div>
-          </div>
-        </div>
 
+
+<!-- MARQUEE -->
+<div class="mq" aria-hidden="true">
+  <div class="mq-track">
+    <span class="mq-item"><span class="mq-sep" style="background:var(--blue)"></span>Fast &amp; reliable</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--green)"></span>BTC Miner on Google Play</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--neon)"></span>Regular updates</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--red)"></span>Secure by design</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--cyan)"></span>Free to download</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--orange)"></span>Quality over quantity</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--blue)"></span>Clean UI, every time</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--green)"></span>No dark patterns</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--neon)"></span>Simple on the surface, solid underneath</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--red)"></span>Built to last</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--cyan)"></span>Nothing unnecessary</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--orange)"></span>Designed with care</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--blue)"></span>Every update earns its place</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--green)"></span>No bloatware</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--neon)"></span>Fast &amp; reliable</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--red)"></span>BTC Miner on Google Play</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--cyan)"></span>Regular updates</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--orange)"></span>Secure by design</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--blue)"></span>Free to download</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--green)"></span>Quality over quantity</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--neon)"></span>Clean UI, every time</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--red)"></span>No dark patterns</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--cyan)"></span>Simple on the surface, solid underneath</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--orange)"></span>Built to last</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--blue)"></span>Nothing unnecessary</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--green)"></span>Designed with care</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--neon)"></span>Every update earns its place</span>
+    <span class="mq-item"><span class="mq-sep" style="background:var(--red)"></span>No bloatware</span>
+  </div>
+</div>
+
+<!-- APP SECTION -->
+<div class="app-s" id="app">
+  <div class="app-top">
+    <div class="app-meta rv">
+      <div class="app-left">
+        <div class="app-tag"><div class="app-tag-icon"><img src="btc-miner-icon.jpg" alt="BTC Miner"></div><span>Latest Release</span></div>
+        <h2 class="app-name">BTC Miner</h2>
+        <p class="app-subtitle">Virtual Mining · Android · Free</p>
+        <p class="app-desc">Tap once to start mining. Watch your virtual balance climb. Activate boosts for speed. Check in daily for rewards. BTC Miner is a clean, interactive way to understand how Bitcoin mining works — without touching your hardware or any real crypto.</p>
         <div class="app-cta">
           <a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener" class="play-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3C3.2 2.6 3 3.1 3 3.7v16.6c0 .6.2 1.1.6 1.4l9.4-9.7-9.4-9.7Z"/><path d="m13.7 11.9 3.4-3.5-9.2-5.3a1.3 1.3 0 0 0-1-.2l6.8 9Z"/><path d="m13.7 12.1-6.8 9c.3 0 .7-.1 1-.2l9.2-5.3-3.4-3.5Z"/><path d="m18.6 9.7-3.5 2 3.5 2c.9-.5 1.9-1.1 1.9-2s-1-1.5-1.9-2Z"/></svg>
-            Get it on Google Play
+            Download on Google Play
           </a>
-          <div class="play-label">
-            <strong>Free Download</strong>
-            Available for Android
-          </div>
+          <div class="play-note"><strong>Free · Android</strong>Regular updates, no pay-to-win</div>
         </div>
       </div>
-
-      <!-- RIGHT: screenshot -->
-      <div class="app-image-pane" aria-hidden="true">
-        <div class="app-image-glow"></div>
-        <img
-          src="btc-miner-screenshot.jpg"
-          alt="BTC Miner app showing the virtual mining dashboard"
-          class="app-screenshot"
-          width="1484" height="835"
-          loading="lazy"
-        >
+      <div class="app-right">
+        <div class="app-features">
+          <div class="app-feat"><div class="af-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><div class="af-t"><strong>Boost System</strong><span>Speed up your virtual mining rate temporarily</span></div></div>
+          <div class="app-feat"><div class="af-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8V4m-3 0h6"/><path d="M3 13h18"/></svg></div><div class="af-t"><strong>Daily Rewards</strong><span>Check-in streaks with virtual bonuses</span></div></div>
+          <div class="app-feat"><div class="af-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg></div><div class="af-t"><strong>Google Sign-In</strong><span>One-tap, progress saves automatically</span></div></div>
+          <div class="app-feat"><div class="af-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="18" cy="8" r="2.5"/><path d="M21 21v-1.5a3 3 0 0 0-2.5-3"/></svg></div><div class="af-t"><strong>Referral System</strong><span>Invite friends, both get rewards</span></div></div>
+          <div class="app-feat"><div class="af-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div class="af-t"><strong>Live Dashboard</strong><span>Speed, balance and stats at a glance</span></div></div>
+          <div class="app-feat"><div class="af-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><path d="M21 3v6h-6"/></svg></div><div class="af-t"><strong>Regular Updates</strong><span>Ongoing improvements, always free</span></div></div>
+        </div>
       </div>
     </div>
-    <p class="app-disclaimer">
-      BTC Miner is a <strong>virtual simulation</strong>. All mining activity runs entirely inside the app and does not use your device hardware for real cryptocurrency mining. No real assets are generated.
-    </p>
+    <div class="ss-wrap rv d2">
+      <p class="ss-label">App Screenshot</p>
+      <div class="ss-16x9">
+        <img src="btc-miner-screenshot.jpg" alt="BTC Miner app dashboard" loading="lazy">
+        <div class="ss-glow"></div>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <div class="hr"></div>
+<div class="hr"></div>
 
-  <!-- ════════════════════════════════════
-       ABOUT
-  ════════════════════════════════════ -->
-  <section class="section" id="about" aria-label="About BlockWave Studios">
-    <div class="about-layout">
-      <div class="about-left">
-        <div class="section-eyebrow reveal">
-          <div class="eyebrow-line"></div>
-          <span class="eyebrow-text">About the Studio</span>
-          <span class="eyebrow-num">02</span>
-        </div>
-
-        <h2 class="section-title reveal reveal-d1">
-          Independent.<br>
-          <em>Intentional.</em><br>
-          Built to last.
-        </h2>
-
-        <p class="about-para reveal reveal-d2" style="margin-top: 28px;">
-          BlockWave Studios is a solo Android app studio based in India. No investor pressure, no feature bloat — just focused engineering on applications people actually use.
-        </p>
-        <p class="about-para reveal reveal-d3">
-          Our mission is straightforward: build apps that respect the people using them. That means honest privacy practices, clean performance, and interfaces that stay out of the way. Every release is held to the same standard.
-        </p>
-        <p class="about-para reveal reveal-d4">
-          We're a small operation, and we think that's a strength. Decisions get made faster, quality stays tighter, and nothing ships until it's ready.
-        </p>
-      </div>
-
-      <div class="about-right reveal reveal-d1">
-        <p style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom: 0;">Studio Principles</p>
-        <ul class="values-list">
-          <li class="value-item">
-            <span class="value-num">01</span>
-            <div class="value-content">
-              <strong>Performance by default</strong>
-              <p>Every app is tuned to be smooth and responsive on real-world devices, not just benchmarks.</p>
-            </div>
-            <div class="value-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
-            </div>
-          </li>
-          <li class="value-item">
-            <span class="value-num">02</span>
-            <div class="value-content">
-              <strong>Privacy without compromise</strong>
-              <p>Minimal data collection, clear policies, and nothing your users wouldn't approve of.</p>
-            </div>
-            <div class="value-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>
-            </div>
-          </li>
-          <li class="value-item">
-            <span class="value-num">03</span>
-            <div class="value-content">
-              <strong>Security built in, not bolted on</strong>
-              <p>Sound engineering choices from the start — not an afterthought when something goes wrong.</p>
-            </div>
-            <div class="value-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </div>
-          </li>
-          <li class="value-item">
-            <span class="value-num">04</span>
-            <div class="value-content">
-              <strong>Long-term reliability</strong>
-              <p>We stay with our releases. Updates keep coming, bugs get fixed, and the app improves over time.</p>
-            </div>
-            <div class="value-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><path d="M21 3v6h-6"/></svg>
-            </div>
-          </li>
+<!-- ABOUT -->
+<section class="s" id="about" aria-label="About BlockWave Studios">
+  <div class="about-grid">
+    <div>
+      <div class="eyebrow rv"><span class="eyebrow-bar" style="background:var(--red)"></span>About the Studio</div>
+      <h2 class="stitle rv d1">Just me,<br><em style="color:var(--blue)">building things</em><br>properly.</h2>
+      <p class="about-p rv d2" style="margin-top:24px">BlockWave Studios is an independent Android app studio based in India. The studio was built around a clear mission: design and release Android applications that are fast, secure, and genuinely respectful of the people using them.</p>
+      <p class="about-p rv d3">Every application is approached with the same standard — reliable performance across real devices, transparent privacy practices, sound security engineering, and a user experience that remains clean and uncluttered.</p>
+      <p class="about-p rv d4">Applications are maintained and improved after launch. Quality takes precedence over quantity, and nothing ships until it meets the studio's standards.</p>
+    </div>
+    <div>
+      <div style="
+        border-radius:20px;
+        background:rgba(12,12,24,.6);
+        backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+        border:1px solid rgba(255,255,255,.07);
+        padding:8px 8px;
+        box-shadow:0 20px 50px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.03) inset;
+        position:relative;
+      ">
+        <div style="position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent)"></div>
+        <ul class="vals rv d1">
+          <li class="val"><span class="val-dot" style="background:var(--red)"></span><div class="val-body"><strong>Performance is non-negotiable</strong><p>Every release is tested across real-world devices. Applications ship when they are fast and stable, not before.</p></div></li>
+          <li class="val"><span class="val-dot" style="background:var(--blue)"></span><div class="val-body"><strong>Privacy by default</strong><p>Data collection is kept to the minimum required. Policies are written plainly and followed strictly.</p></div></li>
+          <li class="val"><span class="val-dot" style="background:var(--green)"></span><div class="val-body"><strong>Security from the ground up</strong><p>Sound engineering decisions are made early in the process, not applied as a fix after something goes wrong.</p></div></li>
+          <li class="val"><span class="val-dot" style="background:var(--neon)"></span><div class="val-body"><strong>Reliability after release</strong><p>Applications are supported and updated after they launch. Continuous improvement is part of the process.</p></div></li>
         </ul>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="hr"></div>
+<div class="hr"></div>
 
-  <!-- ════════════════════════════════════
-       WHAT WE BUILD
-  ════════════════════════════════════ -->
-  <section class="section" id="build" aria-label="What we build">
-    <div class="build-header">
-      <div>
-        <div class="section-eyebrow reveal">
-          <div class="eyebrow-line"></div>
-          <span class="eyebrow-text">What We Build</span>
-          <span class="eyebrow-num">03</span>
-        </div>
-        <h2 class="section-title reveal reveal-d1">Four directions,<br>one <em>studio.</em></h2>
-      </div>
-      <p class="section-body reveal reveal-d2" style="margin-top:0;">Everything we make lives in the Android ecosystem. We keep the focus tight so the quality stays high.</p>
+<!-- BUILD -->
+<section class="s" id="build" aria-label="Products">
+  <div class="build-hdr">
+    <div>
+      <div class="eyebrow rv"><span class="eyebrow-bar" style="background:var(--green)"></span>Products</div>
+      <h2 class="stitle rv d1">What's in<br><em style="color:var(--green)">the pipeline.</em></h2>
     </div>
+    <p class="sdesc rv d2" style="margin-top:0">Everything BlockWave Studios builds lives inside the Android ecosystem. A focused scope keeps the quality where it needs to be.</p>
+  </div>
+  <div class="build-grid rv d2">
+    <div class="bc"><div class="bc-n">01</div><div class="bc-icon" style="color:var(--red)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div><h3>Android Applications</h3><p>Native Android apps engineered for speed, stability, and a clean experience on real-world devices.</p><div class="bc-arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></div></div>
+    <div class="bc"><div class="bc-n">02</div><div class="bc-icon" style="color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 15 8.4-8.4a2 2 0 0 0 0-2.8l-1.2-1.2a2 2 0 0 0-2.8 0L8 11"/><path d="M9 8 3 14l3 3 6-6"/></svg></div><h3>Utility Applications</h3><p>Practical tools designed to solve a specific problem cleanly, without unnecessary complexity.</p><div class="bc-arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></div></div>
+    <div class="bc"><div class="bc-n">03</div><div class="bc-icon" style="color:var(--green)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><h3>Simulation Applications</h3><p>Interactive experiences like BTC Miner, designed to engage users and explain complex concepts through play.</p><div class="bc-arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></div></div>
+    <div class="bc"><div class="bc-n">04</div><div class="bc-icon" style="color:var(--neon)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div><h3>Future Digital Products</h3><p>New applications in active development. BlockWave Studios continues to grow its product portfolio.</p><div class="bc-arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></div></div>
+  </div>
+</section>
 
-    <div class="build-grid reveal reveal-d2">
-      <div class="build-card">
-        <div class="build-card-num">01</div>
-        <div class="build-card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
-        </div>
-        <h3>Android Applications</h3>
-        <p>Native Android apps built for speed, stability, and a clean day-to-day experience on real devices.</p>
-        <div class="build-card-arrow">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </div>
-      </div>
-      <div class="build-card">
-        <div class="build-card-num">02</div>
-        <div class="build-card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 15 8.4-8.4a2 2 0 0 0 0-2.8l-1.2-1.2a2 2 0 0 0-2.8 0L8 11"/><path d="M9 8 3 14l3 3 6-6"/></svg>
-        </div>
-        <h3>Utility Apps</h3>
-        <p>Practical tools designed to solve one problem well, without unnecessary clutter around the edges.</p>
-        <div class="build-card-arrow">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </div>
-      </div>
-      <div class="build-card">
-        <div class="build-card-num">03</div>
-        <div class="build-card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        </div>
-        <h3>Simulations</h3>
-        <p>Engaging interactive experiences — like BTC Miner — built for entertainment and learning through play.</p>
-        <div class="build-card-arrow">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </div>
-      </div>
-      <div class="build-card">
-        <div class="build-card-num">04</div>
-        <div class="build-card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </div>
-        <h3>Future Products</h3>
-        <p>New ideas in active development. The studio continues to grow, and more releases are on the way.</p>
-        <div class="build-card-arrow">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </div>
+<div class="hr"></div>
+
+<!-- STANDARDS -->
+<section class="s s-sm" id="standards" aria-label="Engineering Standards">
+  <div class="metrics-wrap">
+    <div>
+      <div class="eyebrow rv"><span class="eyebrow-bar" style="background:var(--neon)"></span>Standards</div>
+      <h2 class="stitle rv d1">Built to<br><em style="color:var(--neon)">a standard.</em></h2>
+      <p class="sdesc rv d2">Internal quality benchmarks that every BlockWave Studios application must meet before it ships.</p>
+      <div class="mbar-list rv d3">
+        <div class="mbar"><div class="mbar-row"><span class="mbar-name">Performance</span><span class="mbar-val" style="color:var(--blue)">96%</span></div><div class="mbar-track"><div class="mbar-fill" data-w="96" style="background:linear-gradient(90deg,var(--blue),var(--cyan))"></div></div></div>
+        <div class="mbar"><div class="mbar-row"><span class="mbar-name">Security</span><span class="mbar-val" style="color:var(--red)">94%</span></div><div class="mbar-track"><div class="mbar-fill" data-w="94" style="background:linear-gradient(90deg,var(--red),#ff6b85)"></div></div></div>
+        <div class="mbar"><div class="mbar-row"><span class="mbar-name">Reliability</span><span class="mbar-val" style="color:var(--green)">97%</span></div><div class="mbar-track"><div class="mbar-fill" data-w="97" style="background:linear-gradient(90deg,var(--green),#5aff8a)"></div></div></div>
+        <div class="mbar"><div class="mbar-row"><span class="mbar-name">User Experience</span><span class="mbar-val" style="color:var(--neon)">98%</span></div><div class="mbar-track"><div class="mbar-fill" data-w="98" style="background:linear-gradient(90deg,var(--neon),#d88cff)"></div></div></div>
+        <div class="mbar"><div class="mbar-row"><span class="mbar-name">Privacy Compliance</span><span class="mbar-val" style="color:var(--orange)">100%</span></div><div class="mbar-track"><div class="mbar-fill" data-w="100" style="background:linear-gradient(90deg,var(--orange),#ffcc4a)"></div></div></div>
+        <div class="mbar"><div class="mbar-row"><span class="mbar-name">Stability</span><span class="mbar-val" style="color:var(--cyan)">95%</span></div><div class="mbar-track"><div class="mbar-fill" data-w="95" style="background:linear-gradient(90deg,var(--cyan),#a0e8ff)"></div></div></div>
       </div>
     </div>
-  </section>
+    <div class="rv d1">
+      <div class="dash-grid">
 
-  <div class="hr"></div>
-
-  <!-- ════════════════════════════════════
-       STANDARDS / METRICS
-  ════════════════════════════════════ -->
-  <section class="section section-sm" id="standards" aria-label="Engineering standards">
-    <div class="metrics-layout">
-      <div>
-        <div class="section-eyebrow reveal">
-          <div class="eyebrow-line"></div>
-          <span class="eyebrow-text">Standards</span>
-          <span class="eyebrow-num">04</span>
-        </div>
-        <h2 class="section-title reveal reveal-d1">What every<br>release is <em>held to.</em></h2>
-        <p class="section-body reveal reveal-d2">Engineering benchmarks we measure every release against before it ships.</p>
-
-        <div class="metrics-list reveal reveal-d2">
-          <div class="metric-row">
-            <span class="metric-name">Performance</span>
-            <div class="metric-right">
-              <div class="metric-bar-wrap"><div class="metric-bar" data-w="96"></div></div>
-              <span class="metric-val">96%</span>
-            </div>
+        <!-- Card 1 — App Status -->
+        <div class="dash-card" style="border:1px solid rgba(48,209,88,.22)">
+          <div class="dash-card-h">
+            <span class="dash-card-title">App Status</span>
+            <span class="dash-card-badge badge-green">Live</span>
           </div>
-          <div class="metric-row">
-            <span class="metric-name">Security</span>
-            <div class="metric-right">
-              <div class="metric-bar-wrap"><div class="metric-bar" data-w="94"></div></div>
-              <span class="metric-val">94%</span>
-            </div>
-          </div>
-          <div class="metric-row">
-            <span class="metric-name">Reliability</span>
-            <div class="metric-right">
-              <div class="metric-bar-wrap"><div class="metric-bar" data-w="97"></div></div>
-              <span class="metric-val">97%</span>
-            </div>
-          </div>
-          <div class="metric-row">
-            <span class="metric-name">User Experience</span>
-            <div class="metric-right">
-              <div class="metric-bar-wrap"><div class="metric-bar" data-w="98"></div></div>
-              <span class="metric-val">98%</span>
-            </div>
-          </div>
-          <div class="metric-row">
-            <span class="metric-name">Privacy Compliance</span>
-            <div class="metric-right">
-              <div class="metric-bar-wrap"><div class="metric-bar" data-w="100"></div></div>
-              <span class="metric-val">100%</span>
-            </div>
+          <div class="dash-card-body">
+            <div class="dash-big" style="background:linear-gradient(90deg,var(--green),#5aff8a);-webkit-background-clip:text;-webkit-text-fill-color:transparent">BTC Miner</div>
+            <div class="dash-sub">Available on Google Play Store</div>
           </div>
         </div>
-      </div>
 
-      <div class="metrics-visual reveal reveal-d1">
-        <div class="metrics-card">
-          <div class="metrics-card-header">
-            <span class="metrics-card-title">Studio Overview</span>
-            <span class="metrics-card-badge">Live</span>
+        <!-- Card 2 — Google Play Rating -->
+        <div class="dash-card" style="border:1px solid rgba(10,132,255,.22)">
+          <div class="dash-card-h">
+            <span class="dash-card-title">Google Play</span>
+            <span class="dash-card-badge badge-blue">Rating</span>
           </div>
-          <div class="metrics-big-num">
-            <div class="big">100<span>%</span></div>
-            <div class="sub">Android Native — no cross-platform shortcuts</div>
-          </div>
-          <div class="metrics-pills-row">
-            <span class="m-pill">Privacy First</span>
-            <span class="m-pill">India Built</span>
-            <span class="m-pill">Google Play</span>
-            <span class="m-pill">Regular Updates</span>
-            <span class="m-pill">No Data Selling</span>
-            <span class="m-pill">Secure Engineering</span>
+          <div class="dash-card-body">
+            <div class="dash-big" style="background:linear-gradient(90deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent">★ 4.5</div>
+            <div class="dash-sub">User rating on Play Store</div>
           </div>
         </div>
+
+        <!-- Card 3 — Updates -->
+        <div class="dash-card" style="border:1px solid rgba(255,159,10,.2)">
+          <div class="dash-card-h">
+            <span class="dash-card-title">Updates</span>
+            <span class="dash-card-badge badge-orange">Regular</span>
+          </div>
+          <div class="dash-card-body">
+            <div class="dash-big" style="background:linear-gradient(90deg,var(--orange),#ffcc4a);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Free</div>
+            <div class="dash-sub">Always updated, never paywalled</div>
+          </div>
+        </div>
+
+        <!-- Card 4 — Studio Values -->
+        <div class="dash-card" style="border:1px solid rgba(191,90,242,.2)">
+          <div class="dash-card-h">
+            <span class="dash-card-title">Studio Values</span>
+          </div>
+          <div class="dash-tags">
+            <span class="dtag">Privacy First</span>
+            <span class="dtag">Performance</span>
+            <span class="dtag">No Dark Patterns</span>
+            <span class="dtag">Secure by Design</span>
+            <span class="dtag">Quality over Quantity</span>
+            <span class="dtag">Built in India</span>
+          </div>
+        </div>
+
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="hr"></div>
+<div class="hr"></div>
 
-  <!-- ════════════════════════════════════
-       CONTACT
-  ════════════════════════════════════ -->
-  <section class="section" id="contact" aria-label="Contact">
-    <div class="section-eyebrow reveal">
-      <div class="eyebrow-line"></div>
-      <span class="eyebrow-text">Contact</span>
-      <span class="eyebrow-num">05</span>
-    </div>
-
-    <div class="contact-layout reveal reveal-d1">
-      <div class="contact-left">
-        <h2 class="contact-title">Let's stay<br>in <em>touch.</em></h2>
-        <p class="contact-text">
-          For support, bug reports, feature requests, or business enquiries — we're one message away and we actually reply.
-        </p>
-
-        <div class="contact-email-block">
-          <p class="contact-label">Business Email</p>
-          <a href="mailto:studiosblockwave@gmail.com" class="contact-email">studiosblockwave@gmail.com</a>
-        </div>
-
-        <div class="contact-btns">
-          <a href="mailto:studiosblockwave@gmail.com" class="btn-gold">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 8.4 5.5a3 3 0 0 0 3.2 0L22 7"/></svg>
-            Email Us
-          </a>
-          <a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener" class="btn-outline">View on Google Play</a>
-        </div>
+<!-- PRIVACY -->
+<div class="privacy-s" id="privacy">
+  <div class="privacy-inner">
+    <div class="privacy-card rv">
+      <div class="privacy-txt">
+        <div class="privacy-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3>Privacy is built in, not bolted on.</h3>
+        <p>Every application released by BlockWave Studios includes a clear, dedicated Privacy Policy explaining exactly what data is collected and how it is used. Collect only what is necessary, store nothing beyond what the app needs to function, and be transparent at every step.</p>
       </div>
-
-      <div class="contact-right">
-        <p style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;">Contact Info</p>
-        <ul class="contact-info-list">
-          <li class="contact-info-item">
-            <div class="cii-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 8.4 5.5a3 3 0 0 0 3.2 0L22 7"/></svg>
-            </div>
-            <div>
-              <p class="cii-label">Email</p>
-              <p class="cii-value">studiosblockwave@gmail.com</p>
-            </div>
-          </li>
-          <li class="contact-info-item">
-            <div class="cii-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 1 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            </div>
-            <div>
-              <p class="cii-label">Location</p>
-              <p class="cii-value">India</p>
-            </div>
-          </li>
-          <li class="contact-info-item">
-            <div class="cii-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
-            </div>
-            <div>
-              <p class="cii-label">Platform</p>
-              <p class="cii-value">Google Play Store — Android</p>
-            </div>
-          </li>
-          <li class="contact-info-item">
-            <div class="cii-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            </div>
-            <div>
-              <p class="cii-label">Response Time</p>
-              <p class="cii-value">Within 24–48 hours</p>
-            </div>
-          </li>
-        </ul>
+      <div class="privacy-action">
+        <a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener" class="btn-privacy">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>
+          View Privacy Policy
+        </a>
       </div>
     </div>
-  </section>
+  </div>
+</div>
 
-  </main>
+<div class="hr"></div>
 
-  <!-- ════════════════════════════════════
-       FOOTER
-  ════════════════════════════════════ -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <img src="blockwave-logo.jpg" alt="BlockWave Studios">
-            <span class="footer-logo-text">BlockWave Studios</span>
-          </div>
-          <p class="footer-desc">An independent Android app studio based in India — building performance-first, privacy-focused applications for everyday users.</p>
-        </div>
-        <div class="footer-cols">
-          <div class="footer-col">
-            <h5>Navigate</h5>
-            <ul>
-              <li><a href="#app">BTC Miner</a></li>
-              <li><a href="#about">About Us</a></li>
-              <li><a href="#build">What We Build</a></li>
-              <li><a href="#standards">Standards</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h5>Connect</h5>
-            <ul>
-              <li><a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener">Google Play</a></li>
-              <li><a href="mailto:studiosblockwave@gmail.com">Email Us</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p class="footer-copy">© 2026 BlockWave Studios. All rights reserved.</p>
-        <p class="footer-dev">Developer — <strong>Prince Shekhawat</strong></p>
+<!-- CONTACT -->
+<section class="s" id="contact" aria-label="Contact">
+  <div class="eyebrow rv"><span class="eyebrow-bar" style="background:var(--cyan)"></span>Contact</div>
+  <div class="ct-wrap rv d1">
+    <div class="ct-l">
+      <h2 class="ct-title">Questions?<br>We're here.</h2>
+      <p class="ct-txt">Whether it's a bug report, feature request, or general feedback — all messages are read and taken seriously. Support is available directly from the developer, no ticketing systems, no delays.</p>
+      <p class="ct-email-lbl">Business Email</p>
+      <a href="mailto:studiosblockwave@gmail.com" class="ct-email">studiosblockwave@gmail.com</a>
+      <div class="ct-btns">
+        <a href="mailto:studiosblockwave@gmail.com" class="btn-primary">Send a Message</a>
+        <a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener" class="btn-ghost">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M3.6 2.3C3.2 2.6 3 3.1 3 3.7v16.6c0 .6.2 1.1.6 1.4l9.4-9.7-9.4-9.7Z"/><path d="m13.7 11.9 3.4-3.5-9.2-5.3a1.3 1.3 0 0 0-1-.2l6.8 9Z"/><path d="m13.7 12.1-6.8 9c.3 0 .7-.1 1-.2l9.2-5.3-3.4-3.5Z"/><path d="m18.6 9.7-3.5 2 3.5 2c.9-.5 1.9-1.1 1.9-2s-1-1.5-1.9-2Z"/></svg>
+          Google Play
+        </a>
       </div>
     </div>
-  </footer>
+    <div class="ct-r">
+      <div class="ct-chips">
+        <div class="ct-chip"><span class="ct-chip-dot" style="background:var(--green)"></span><span class="ct-chip-txt">Free to contact</span></div>
+        <div class="ct-chip"><span class="ct-chip-dot" style="background:var(--blue)"></span><span class="ct-chip-txt">No spam, ever</span></div>
+        <div class="ct-chip"><span class="ct-chip-dot" style="background:var(--cyan)"></span><span class="ct-chip-txt">Usually replies within 24hrs</span></div>
+        <div class="ct-chip"><span class="ct-chip-dot" style="background:var(--neon)"></span><span class="ct-chip-txt">Support available</span></div>
+        <div class="ct-chip"><span class="ct-chip-dot" style="background:var(--orange)"></span><span class="ct-chip-txt">Always improving based on feedback</span></div>
+        <div class="ct-chip"><span class="ct-chip-dot" style="background:var(--red)"></span><span class="ct-chip-txt">We take criticism well</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script>
-    // ── CURSOR ──
-    const dot = document.getElementById('curDot');
-    const ring = document.getElementById('curRing');
-    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+</main>
 
-    if (!isTouch) {
-      let mx = -200, my = -200, rx = -200, ry = -200;
+<footer>
+  <div class="ft">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="ft-logo"><img src="blockwave-logo.jpg" alt="BlockWave Studios" width="24" height="24"><span class="ft-logo-t">BlockWave Studios</span></div>
+        <p class="ft-desc">An independent Android app studio based in India, building performance-first, privacy-focused applications.</p>
+      </div>
+      <div class="ft-cols">
+        <div class="ft-col"><h5>Quick Links</h5><ul><li><a href="#app">Applications</a></li><li><a href="#about">About</a></li><li><a href="#build">Products</a></li><li><a href="#standards">Standards</a></li><li><a href="#contact">Contact</a></li></ul></div>
+        <div class="ft-col"><h5>Connect</h5><ul><li><a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener">Google Play</a></li><li><a href="https://play.google.com/store/apps/details?id=com.prince.btc_miner" target="_blank" rel="noopener">Privacy Policy</a></li><li><a href="mailto:studiosblockwave@gmail.com">Support</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <p class="ft-copy">© 2026 BlockWave Studios. All rights reserved.</p>
+      <p class="ft-dev">Prince Shekhawat</p>
+    </div>
+  </div>
+</footer>
 
-      document.addEventListener('mousemove', e => {
-        mx = e.clientX; my = e.clientY;
-        dot.style.left = mx + 'px';
-        dot.style.top  = my + 'px';
+<script>
+/* CURSOR */
+const cur=document.getElementById('cur'),cr=document.getElementById('cr');
+const isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+if(!isTouch){
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+  (function lerp(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(lerp)})();
+  document.querySelectorAll('a,button,.c3d,.bc,.val,.app-feat,.num-c,.dash-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.querySelector('.cd').classList.add('h');cr.classList.add('h')});
+    el.addEventListener('mouseleave',()=>{cur.querySelector('.cd').classList.remove('h');cr.classList.remove('h')});
+  });
+}
+
+/* NAV */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('on',scrollY>60),{passive:true});
+
+/* REVEAL */
+const ro=new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting&&x.target.classList.add('in')),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+/* METRIC BARS */
+const bo=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.querySelectorAll('.mbar-fill[data-w]').forEach(b=>b.style.width=b.dataset.w+'%');bo.unobserve(x.target)}})},{threshold:.25});
+document.querySelectorAll('.mbar-list').forEach(el=>bo.observe(el));
+
+/* RINGS */
+const CIRC=2*Math.PI*30;
+const ringObs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.querySelectorAll('.ring-prog[data-pct]').forEach(r=>{const p=parseFloat(r.dataset.pct)||0;r.style.strokeDashoffset=CIRC-(CIRC*p/100)});ringObs.unobserve(x.target)}})},{threshold:.3});
+document.querySelectorAll('.dash-grid').forEach(el=>ringObs.observe(el));
+
+/* THREE.JS */
+(function(){
+  const canvas=document.getElementById('three-canvas');
+  const W=window.innerWidth,H=window.innerHeight;
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0x000000,0);
+  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(60,W/H,0.1,100);
+  camera.position.z=5;
+  const objs=[],geos=[new THREE.IcosahedronGeometry(1,1),new THREE.OctahedronGeometry(.85,0),new THREE.TorusGeometry(.7,.25,8,24),new THREE.BoxGeometry(1.1,1.1,1.1)];
+  const colors3=[0xFF2D55,0x0A84FF,0x30D158,0xBF5AF2],positions=[[-4.2,1.8,-3],[4.0,2.2,-4],[-3.5,-1.8,-2.5],[3.8,-1.5,-3.5]];
+  geos.forEach((geo,i)=>{const mat=new THREE.MeshBasicMaterial({color:colors3[i],wireframe:true,opacity:.2,transparent:true});const mesh=new THREE.Mesh(geo,mat);mesh.position.set(...positions[i]);scene.add(mesh);objs.push({mesh,speed:0.004+i*.001,axis:new THREE.Vector3(Math.random(),Math.random(),Math.random()).normalize()})});
+  const pCount=220,pGeo=new THREE.BufferGeometry(),pPos=new Float32Array(pCount*3);
+  for(let i=0;i<pCount;i++){pPos[i*3]=(Math.random()-.5)*22;pPos[i*3+1]=(Math.random()-.5)*22;pPos[i*3+2]=(Math.random()-.5)*10-2}
+  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+  scene.add(new THREE.Points(pGeo,new THREE.PointsMaterial({color:0x3A5CCC,size:.03,transparent:true,opacity:.45})));
+  let mX=0,mY=0;
+  document.addEventListener('mousemove',e=>{mX=(e.clientX/window.innerWidth-.5)*.6;mY=(e.clientY/window.innerHeight-.5)*.4});
+  let t=0;
+  function animate(){requestAnimationFrame(animate);t+=.005;objs.forEach(o=>o.mesh.rotateOnAxis(o.axis,o.speed));scene.children[4].rotation.y=t*.04;camera.position.x+=(mX-camera.position.x)*.04;camera.position.y+=(-mY-camera.position.y)*.04;camera.lookAt(scene.position);renderer.render(scene,camera)}
+  animate();
+  window.addEventListener('resize',()=>{const W2=window.innerWidth,H2=window.innerHeight;camera.aspect=W2/H2;camera.updateProjectionMatrix();renderer.setSize(W2,H2)});
+})();
+
+/* 3D CARD TILT */
+if(!isTouch){
+  document.querySelectorAll('.c3d').forEach(card=>{
+    card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,cx=r.width/2,cy=r.height/2;card.style.transform=`perspective(900px) rotateX(${((y-cy)/cy)*-12}deg) rotateY(${((x-cx)/cx)*12}deg) scale(1.04)`});
+    card.addEventListener('mouseleave',()=>{card.style.transform=''});
+  });
+}
+
+/* HERO GLASS MOUSE TILT */
+if(!isTouch){
+  const glass=document.getElementById('heroGlass');
+  const hero=document.querySelector('.hero');
+  const micros=document.querySelectorAll('.micro-card');
+  if(glass&&hero){
+    hero.addEventListener('mousemove',e=>{
+      const r=hero.getBoundingClientRect();
+      const dx=(e.clientX-r.left-r.width/2)/(r.width/2);
+      const dy=(e.clientY-r.top-r.height/2)/(r.height/2);
+      glass.style.transform=`translateY(-5px) perspective(1200px) rotateX(${dy*-4}deg) rotateY(${dx*5}deg)`;
+      glass.style.transition='transform .12s ease-out';
+      micros.forEach((mc,i)=>{
+        const d=[1.6,1.3][i]||1.4;
+        mc.style.transform=`translateX(${dx*7*d}px) translateY(${dy*4*d-8}px)`;
+        mc.style.transition='transform .18s ease-out';
       });
-
-      (function lerp() {
-        rx += (mx - rx) * 0.11;
-        ry += (my - ry) * 0.11;
-        ring.style.left = rx + 'px';
-        ring.style.top  = ry + 'px';
-        requestAnimationFrame(lerp);
-      })();
-
-      const hovTargets = document.querySelectorAll('a, button, .build-card, .value-item, .metric-row, .app-feature, .contact-info-item');
-      hovTargets.forEach(el => {
-        el.addEventListener('mouseenter', () => { dot.classList.add('hov'); ring.classList.add('hov'); });
-        el.addEventListener('mouseleave', () => { dot.classList.remove('hov'); ring.classList.remove('hov'); });
-      });
-    }
-
-    // ── NAV SCROLL ──
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
-
-    // ── SCROLL REVEAL ──
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); } });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // ── METRIC BARS ──
-    const barObserver = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.querySelectorAll('.metric-bar[data-w]').forEach(b => {
-            b.style.width = b.dataset.w + '%';
-          });
-          barObserver.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    document.querySelectorAll('.metrics-list').forEach(el => barObserver.observe(el));
-  </script>
+    });
+    hero.addEventListener('mouseleave',()=>{
+      glass.style.transform='';glass.style.transition='transform .6s var(--ease)';
+      micros.forEach(mc=>{mc.style.transform='';mc.style.transition='transform .6s ease-out'});
+    });
+  }
+}
+</script>
 </body>
 </html>
