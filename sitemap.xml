@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://studiosblockwave.github.io/</loc></url>
-  <url><loc>https://studiosblockwave.github.io/privacy.html</loc></url>
-  <url><loc>https://studiosblockwave.github.io/terms.html</loc></url>
-  <url><loc>https://studiosblockwave.github.io/delete-account.html</loc></url>
+  <url><loc>https://studiosblockwave.github.io/btcprivacy.html</loc></url>
+  <url><loc>https://studiosblockwave.github.io/btcterms.html</loc></url>
+  <url><loc>https://studiosblockwave.github.io/btcdeleteaccount.html</loc></url>
+  <url><loc>https://studiosblockwave.github.io/solanaprivacy.html</loc></url>
+  <url><loc>https://studiosblockwave.github.io/solanaterms.html</loc></url>
+  <url><loc>https://studiosblockwave.github.io/solanadeleteaccount.html</loc></url>
 </urlset>
