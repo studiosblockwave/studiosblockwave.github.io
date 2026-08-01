@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy - Ethereum Miner</title>
+
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: #000000;
+  margin: 0;
+  padding: 60px 6%;
+  line-height: 1.85;
+  font-size: 15px;
+}
+
+h1 { font-size: 32px; margin-bottom: 10px; }
+h2 { font-size: 20px; margin-top: 45px; }
+h3 { font-size: 16px; margin-top: 25px; }
+p { margin: 12px 0; }
+ul { margin-left: 25px; }
+
+.footer {
+  margin-top: 80px;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+<h1>Privacy Policy</h1>
+
+<p><strong>Effective Date:</strong> 1-08-2026</p>
+
+<p>Thank you for using <strong>Ethereum Miner</strong> . This Privacy Policy explains how we collect, use, and protect your personal information when you interact with our app and services.</p>
+
+
+<h2>1. Scope and Application</h2>
+
+<p>This Privacy Policy applies to information processed when you:</p>
+<ul>
+<li>Install or use the Ethereum Miner mobile application;</li>
+<li>Sign in using Google authentication;</li>
+<li>Interact with in-app features, rewards, or advertisements;</li>
+<li>Complete surveys or offers through integrated survey/offerwall partners;</li>
+<li>Listen to music through the App's Music Task ("Watch & Earn") feature;</li>
+<li>Contact customer support;</li>
+<li>Use integrated third-party services within the App.</li>
+</ul>
+
+<p>This Policy does not apply to independent third-party websites, services, or platforms that operate under their own privacy policies.</p>
+
+
+<h2>2. Categories of Information We Collect</h2>
+
+<h3>2.1 Information You Provide</h3>
+<ul>
+<li>Email address and name (via Google Sign-In);</li>
+<li>Optional phone number (if voluntarily provided);</li>
+<li>Wallet address entered within the App (if applicable);</li>
+<li>Information shared when contacting support.</li>
+</ul>
+
+<h3>2.2 Account and Authentication Data</h3>
+<p>When you authenticate using Google services, we receive basic account identifiers required to verify and maintain your account securely.</p>
+
+<h3>2.3 Usage and Activity Information</h3>
+<ul>
+<li>Simulated mining activity such as hash rate values and calculated rewards;</li>
+<li>Session duration and engagement metrics;</li>
+<li>Reward claims, referrals, and bonus activations;</li>
+<li>Survey and offer completions submitted through third-party survey/offerwall partners, and the in-app coin rewards credited as a result;</li>
+<li>Music listening task progress and completions, and the in-app coin rewards credited as a result (see Section 2.7 below);</li>
+<li>Feature usage patterns within the App.</li>
+</ul>
+
+<h3>2.4 Device and Technical Information</h3>
+<ul>
+<li>Device model and operating system version;</li>
+<li>App version and configuration details;</li>
+<li>IP address and approximate geographic location;</li>
+<li>Advertising identifiers and installation identifiers;</li>
+<li>Crash logs and diagnostic reports.</li>
+</ul>
+
+<h3>2.5 Information from Third-Party Services</h3>
+<p>The App integrates trusted third-party services including Google Play Services, Google Firebase (authentication and database), Firebase diagnostic tools, advertising partners such as Google AdMob, AppLovin, Start.io, Yandex, and survey/offerwall partners such as TheoremReach and CPAlead (see Section 2.6 below). These providers may collect and process data according to their respective privacy policies.</p>
+
+<h3>2.6 Survey and Offerwall Partners</h3>
+<p>The App includes an optional "Surveys" section that lets you complete surveys and offers provided by third-party survey/offerwall partners, currently including <strong>TheoremReach</strong> and <strong>CPAlead</strong>, in exchange for in-app coin rewards. When you choose to participate:</p>
+<ul>
+<li>You leave the App's own interface and interact directly with the partner's website or survey content, displayed within the App;</li>
+<li>The partner may collect information such as your device/advertising identifiers, IP address, approximate location, demographic answers you provide (e.g. age range, gender, interests), and survey/offer completion status;</li>
+<li>We share a unique, non-identifying account reference (your app user ID) with the partner solely so that completed surveys/offers can be matched back to your account and the correct coin reward credited;</li>
+<li>The partner's own privacy policy, not this Policy, governs how they collect, use, and store the information gathered during a survey or offer. We encourage you to review each partner's privacy policy before participating:
+  <ul>
+    <li>TheoremReach: <a href="https://info.theoremreach.com/privacy-policy/">https://info.theoremreach.com/privacy-policy/</a></li>
+    <li>CPAlead: <a href="https://www.cpalead.com/privacy-policy">https://www.cpalead.com/privacy-policy</a></li>
+  </ul>
+</li>
+<li>Participation in the Surveys section is entirely optional and is not required to use the rest of the App.</li>
+</ul>
+
+<h3>2.7 Music Listening Tasks (Watch & Earn)</h3>
+<p>The App includes an optional "Music Task" section that lets you listen to a song in the Spotify or YouTube Music app to earn in-app coin rewards. When you use this feature:</p>
+<ul>
+<li>The App checks, locally on your device only, whether Spotify and/or YouTube Music are installed. This check stays on your device, is never transmitted to us or any third party, and is used solely to guide you to install the relevant app if it isn't already present;</li>
+<li>While a music task is active, the App monitors, at the device system level, whether any audio is currently playing (a simple yes/no signal). The App does not access, read, log, or transmit what song, artist, or content is actually playing, and does not access your Spotify or YouTube Music account, login, or activity in any way;</li>
+<li>Your listening progress (the number of seconds detected as actively playing toward a specific task) is stored and linked to your account, so that your reward can be accurately calculated and credited once the required listening time is completed;</li>
+<li>We do not send any information to Spotify or YouTube Music, and we do not receive any information from them beyond the on-device "is audio playing" signal described above;</li>
+<li>A persistent notification may be shown while a music task is in progress, displaying your live listening progress for that task;</li>
+<li>Participation in the Music Task section is entirely optional and is not required to use the rest of the App.</li>
+</ul>
+
+
+<h2>3. How We Use Your Information</h2>
+
+<p>We process collected information for the following purposes:</p>
+
+<ul>
+<li>To create and manage user accounts;</li>
+<li>To operate the App’s internal reward simulation system;</li>
+<li>To credit in-app coin rewards for surveys and offers completed through our survey/offerwall partners, and to convert those coins into in-app currency at your request;</li>
+<li>To credit in-app coin rewards for music listening tasks completed through the Watch & Earn feature, and to convert those coins into in-app currency at your request;</li>
+<li>To improve functionality and user experience;</li>
+<li>To display and measure advertisements, including rewarded ads;</li>
+<li>To detect fraud, abuse, or policy violations;</li>
+<li>To comply with legal and regulatory obligations;</li>
+<li>To communicate important updates regarding the Service.</li>
+</ul>
+
+
+<h2>4. Legal Bases for Processing (EEA/UK Users)</h2>
+
+<p>If you are located in the European Economic Area or the United Kingdom, we process personal data under one or more of the following legal bases:</p>
+
+<ul>
+<li><strong>Contractual necessity</strong> – to provide features you request;</li>
+<li><strong>Legitimate interests</strong> – to improve security, prevent fraud, and enhance the Service;</li>
+<li><strong>Consent</strong> – where required for advertising, survey/offerwall participation, or analytics technologies;</li>
+<li><strong>Legal obligations</strong> – to comply with applicable laws.</li>
+</ul>
+
+
+<h2>5. How We Share Information</h2>
+
+<p>We do not sell personal information for monetary compensation.</p>
+
+<p>We may share limited information with:</p>
+
+<ul>
+<li><strong>Service Providers:</strong> Cloud hosting, authentication, analytics, and security partners who help operate the App.</li>
+<li><strong>Advertising Partners:</strong> Ad networks that deliver and measure advertisements.</li>
+<li><strong>Survey/Offerwall Partners:</strong> Providers such as TheoremReach and CPAlead, who receive a non-identifying user reference and any information you choose to submit while completing their surveys/offers, as described in Section 2.6.</li>
+<li><strong>Blockchain Infrastructure (where applicable):</strong> If wallet-based features are used, certain transaction-related information may be processed on public blockchain networks, which are inherently transparent and cannot be altered or erased.</li>
+<li><strong>Legal Authorities:</strong> When required to comply with legal obligations.</li>
+<li><strong>Business Transfers:</strong> In case of merger, acquisition, or restructuring.</li>
+</ul>
+
+<p>We do not share any information with Spotify or YouTube Music. The Music Task feature described in Section 2.7 only checks local, on-device signals and does not involve any data exchange with those apps.</p>
+
+
+<h2>6. International Data Transfers</h2>
+
+<p>Your information may be processed on servers located outside your country of residence. Where required by applicable law, appropriate safeguards are implemented to protect transferred data.</p>
+
+
+<h2>7. Data Retention</h2>
+
+<p>We retain personal data only for as long as necessary to provide the Service and fulfill legal, security, and operational obligations.</p>
+
+<ul>
+<li>Account data is retained while your account remains active.</li>
+<li>Usage logs may be stored temporarily for analytics and security purposes.</li>
+<li>Support communications may be retained for troubleshooting and compliance.</li>
+</ul>
+
+
+<h2>8. Your Rights and Choices</h2>
+
+<p>Depending on your jurisdiction, you may have rights including:</p>
+
+<ul>
+<li>Access to your personal data;</li>
+<li>Correction of inaccurate information;</li>
+<li>Deletion of your account data;</li>
+<li>Restriction or objection to certain processing;</li>
+<li>Withdrawal of consent where applicable.</li>
+</ul>
+
+<p>You may exercise your rights by contacting: <strong>helpblockwave@gmail.com</strong></p>
+
+
+<h2>9. Data Security</h2>
+
+<p>We implement appropriate technical and organizational safeguards to protect your information, including:</p>
+
+<ul>
+<li>Encrypted data transmission (HTTPS);</li>
+<li>Secure cloud-based storage infrastructure;</li>
+<li>Restricted access to authorized personnel only;</li>
+<li>Fraud detection and monitoring mechanisms.</li>
+</ul>
+
+<p>While we strive to follow industry best practices, no method of transmission or electronic storage can guarantee absolute security.</p>
+
+
+<h2>10. Children's Privacy</h2>
+
+<p>The Service is not directed toward individuals under 18 years of age. We do not knowingly collect personal data from minors. If you believe a minor has provided information, please contact us for removal.</p>
+
+
+<h2>11. Advertising and Analytics Choices</h2>
+
+<p>Certain advertisements and analytics services may use tracking technologies to provide personalized ads.</p>
+
+<p>You may opt out or manage preferences through:</p>
+
+<ul>
+<li>Device-level advertising settings;</li>
+<li>Network Advertising Initiative (NAI);</li>
+<li>Digital Advertising Alliance (DAA);</li>
+<li>AppChoices application (available on major app stores).</li>
+</ul>
+
+
+<h2>12. Cookies and Similar Technologies</h2>
+
+<p>Integrated SDKs may use identifiers and similar technologies to analyze usage and improve service performance. You can manage these permissions through your device settings.</p>
+
+
+<h2>13. Automated Decision-Making</h2>
+
+<p>We may use automated systems to identify suspicious behavior, enforce rules, and maintain platform integrity. These systems may restrict features or require additional verification when necessary.</p>
+
+
+<h2>14. Account Deletion Process</h2>
+
+<p>You may request deletion of your Ethereum Miner account at any time.</p>
+
+<p><strong>To delete your account:</strong></p>
+<ul>
+<li>Open the Ethereum Miner app;</li>
+<li>Navigate to Settings → Delete Account;</li>
+<li>Complete the verification steps shown;</li>
+<li>Confirmation will be sent once deletion is completed.</li>
+</ul>
+
+<p>Account deletion is typically processed within 7–14 business days. Certain information may be retained if required for legal, security, or compliance purposes.</p>
+
+<p>If you cannot access the app, you may request deletion by contacting: <strong>helpblockwave@gmail.com</strong></p>
+
+
+<h2>15. Simulation Disclaimer</h2>
+
+<p>Ethereum Miner operates a software-based reward simulation system. References to “mining,” “hash rate,” “boosts,” or similar terminology describe in-app mechanics designed for engagement and educational purposes. The application does not utilize your device hardware for cryptocurrency mining. Results may vary depending on system conditions and network factors. The Service is intended for educational and entertainment use and does not constitute financial or investment advice. The app does not perform real cryptocurrency mining, does not generate Ethereum, and does not guarantee users any real cryptocurrency or monetary rewards.</p>
+
+
+<h2>16. Changes to This Policy</h2>
+
+<p>We may update this Privacy Policy periodically. Continued use of the Service after updates constitutes acceptance of the revised Policy.</p>
+
+
+<h2>17. Contact Information</h2>
+
+<p>If you have any questions about this Privacy Policy or wish to exercise your rights under applicable data protection laws, please contact:</p>
+
+<p>
+<strong>BlockWave Studios</strong><br>
+India<br>
+<strong>Email:</strong> helpblockwave@gmail.com
+</p>
+
+<div class="footer">
+© 2026 BlockWave Studios. All rights reserved.
+</div>
+
+</body>
+</html>
