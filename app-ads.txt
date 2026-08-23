@@ -294,3 +294,4 @@ spinx.biz, 1373698890, RESELLER
 rubiconproject.com, 27714, RESELLER, 0bfd66d529a55807
 orbrx.ai, 8000869124, RESELLER
 
+vungle.com, 6a44944e0ede581a04247247b7, DIRECT, c107d686becd2d77
