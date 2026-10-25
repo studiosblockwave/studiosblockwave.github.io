@@ -6269,3 +6269,29 @@ lijit.com, 411121, RESELLER, fafdf38b16bf6b2b #SOVRN
 e-planning.net, 1bf7b5d803f178c4, RESELLER, c1ba615865ed87b2
 krushmedia.com, AJxF6R719a9M6CaTvK, RESELLER
 insticator.com, e2d3e33c-9911-477a-8ae2-f059870c67c0, RESELLER, b3511ffcafb23a32
+triplelift.com, 14900, reseller, 6c33edb13117fd86
+inmobi.com, 21dafc7bf4da4c399c6916da78462fb4, reseller, 83e75a7ae333ca9d
+triplelift.com, 14901, reseller, 6c33edb13117fd86
+consumable.com, 2001689, reseller, aefcd3d2f45b5070
+apester.com, 91071, reseller
+pinklion.io, 190976892, reseller
+bigo.sg, tef1q2vbni, reseller
+adorphic.com, 4054, reseller
+ignitemediatech.com, pub_11154, reseller
+bidmachine.io, 1700, reseller
+bold-win.com, 1162, reseller, 71746737d0bab951
+bluexad.ai, 2064614586140594176, reseller
+bidplay.ai, 2607009, reseller
+taipeidigital.com, 01012311678, reseller
+metup.it, ajxf6r118a9m6catvk, reseller
+uis.mobfox.com, 2568, reseller, 5529a3d1f59865be
+improvedigital.com, 2417, reseller
+wovenaudience.com, 1008, reseller
+rubiconproject.com, 28673, reseller, 0bfd66d529a55807
+triplelift.com, 14858, reseller, 6c33edb13117fd86
+newtonsmobi.com, 6aa7783282d8f1ca, reseller
+sharethrough.com, 5791, reseller, 060d053dcf45cbf3
+improvedigital.com, 2975, reseller
+optimanetwork.com, 20001, reseller
+conversantmedia.com, 100772, reseller, 03113cd04947736d
+zetaglobal.net, 551, reseller
